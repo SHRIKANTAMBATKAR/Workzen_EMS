@@ -1,0 +1,68 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Admin User",
+      "email": "admin@workzen.com",
+      "password": "admin123",
+      "role": "ADMIN",
+      "active": true
+    },
+    {
+      "id": "2",
+      "name": "Rahul Trainer",
+      "email": "trainer@workzen.com",
+      "password": "trainer123",
+      "role": "TRAINER",
+      "active": true
+    },
+    {
+      "id": "3",
+      "name": "Priya Analyst",
+      "email": "analyst@workzen.com",
+      "password": "analyst123",
+      "role": "ANALYST",
+      "active": true
+    },
+    {
+      "id": "4",
+      "name": "Neha Counselor",
+      "email": "counselor@workzen.com",
+      "password": "counselor123",
+      "role": "COUNSELOR",
+      "active": true
+    },
+    {
+      "id": "5",
+      "name": "Shrikant",
+      "email": "shrikant@workzen.com",
+      "password": "admin123",
+      "role": "ADMIN",
+      "active": true
+    },
+    {
+      "id": "1771571343876",
+      "name": "vaibhav",
+      "email": "vaibhav@gmail.com",
+      "role": "ANALYST",
+      "password": "staff123",
+      "active": true
+    },
+    {
+      "id": "1771571626456",
+      "name": "Realtime Trainer",
+      "email": "realtime@workzen.com",
+      "role": "TRAINER",
+      "password": "staff123",
+      "active": true
+    },
+    {
+      "id": "1771572515676",
+      "name": "mahesh chine",
+      "email": "mahesh@gmail.com",
+      "role": "COUNSELOR",
+      "password": "staff123",
+      "active": true
+    }
+  ]
+}

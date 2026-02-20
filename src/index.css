@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
+@reference "tailwindcss";
+
+@theme {
+  --color-primary: #0f172a;
+  --color-accent: #3b82f6;
+  --color-accent-hover: #2563eb;
+  --color-surface: #ffffff;
+  --color-background: #f8fafc;
+
+  --shadow-premium: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+  --shadow-glass: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-primary;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Outfit', sans-serif;
+  }
+}
+
+@utility glass-card {
+  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-glass rounded-2xl;
+}
+
+@utility btn-premium {
+  @apply relative overflow-hidden px-6 py-2.5 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-95;
+}
+
+@utility btn-premium-primary {
+  @apply btn-premium bg-accent text-white hover:bg-accent-hover;
+}
+
+@utility btn-premium-outline {
+  @apply btn-premium border-2 border-accent/20 text-accent hover:bg-accent/5;
+}
+
+@utility input-premium {
+  @apply w-full px-4 py-3 bg-white/50 border border-slate-200 rounded-xl outline-none transition-all duration-200 focus:border-accent focus:ring-4 focus:ring-accent/10;
+}
+
+@utility nav-link {
+  @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100/50 hover:text-accent font-medium;
+}
+
+@utility nav-link-active {
+  @apply bg-accent/10 text-accent;
+}
+
+@utility glass-card-dark {
+  @apply bg-black/40 backdrop-blur-2xl border border-white/5 shadow-2xl rounded-3xl;
+}
+
+@utility glass-card-border {
+  @apply border border-white/10 ring-1 ring-black/20;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300;
+}
