@@ -3,17 +3,19 @@
     {
       "id": "1",
       "name": "Admin User",
-      "email": "admin@workzen.com",
+      "email": "admin@123",
       "password": "admin123",
       "role": "ADMIN",
+      "mobile": "9876543210",
       "active": true
     },
     {
       "id": "2",
-      "name": "Rahul Trainer",
+      "name": "Rahul rane",
       "email": "trainer@workzen.com",
       "password": "trainer123",
       "role": "TRAINER",
+      "mobile": "9123456780",
       "active": true
     },
     {
@@ -22,6 +24,7 @@
       "email": "analyst@workzen.com",
       "password": "analyst123",
       "role": "ANALYST",
+      "mobile": "9234567891",
       "active": true
     },
     {
@@ -30,6 +33,7 @@
       "email": "counselor@workzen.com",
       "password": "counselor123",
       "role": "COUNSELOR",
+      "mobile": "9345678902",
       "active": true
     },
     {
@@ -38,6 +42,7 @@
       "email": "shrikant@workzen.com",
       "password": "admin123",
       "role": "ADMIN",
+      "mobile": "9456789013",
       "active": true
     },
     {
@@ -46,6 +51,7 @@
       "email": "vaibhav@gmail.com",
       "role": "ANALYST",
       "password": "staff123",
+      "mobile": "9567890124",
       "active": true
     },
     {
@@ -54,6 +60,7 @@
       "email": "realtime@workzen.com",
       "role": "TRAINER",
       "password": "staff123",
+      "mobile": "9678901235",
       "active": true
     },
     {
@@ -61,6 +68,16 @@
       "name": "mahesh chine",
       "email": "mahesh@gmail.com",
       "role": "COUNSELOR",
+      "password": "staff123",
+      "mobile": "9789012346",
+      "active": true
+    },
+    {
+      "id": "1771585981985",
+      "name": "sandip",
+      "email": "sandip@gamil.com",
+      "mobile": "65699896626",
+      "role": "TRAINER",
       "password": "staff123",
       "active": true
     }

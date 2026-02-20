@@ -48,9 +48,9 @@ export default function BatchManagement() {
         <DashboardLayout allowedRoles={["ANALYST"]}>
             <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                 <div className="flex justify-between items-center text-left">
-                    <div>
-                        <h2 className="text-3xl font-bold tracking-tight">Batch Management</h2>
-                        <p className="text-slate-500 mt-1">Design and schedule training batches.</p>
+                    <div className="text-left">
+                        <h2 className="text-3xl font-bold tracking-tight text-white">Batch Management</h2>
+                        <p className="text-slate-400 mt-1 font-medium">Design and schedule training batches.</p>
                     </div>
                     <button
                         onClick={() => setShowAdd(!showAdd)}
@@ -62,11 +62,11 @@ export default function BatchManagement() {
                 </div>
 
                 {showAdd && (
-                    <div className="glass-card p-8 animate-in zoom-in-95 duration-300">
-                        <h3 className="text-xl font-bold mb-6">Create New Batch</h3>
+                    <div className="glass-card p-8 animate-in zoom-in-95 duration-300 text-left">
+                        <h3 className="text-xl font-bold mb-6 text-white">Create New Batch</h3>
                         <form onSubmit={handleAddBatch} className="grid md:grid-cols-4 gap-6">
                             <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-600">Batch Name</label>
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px]">Batch Name</label>
                                 <input
                                     type="text"
                                     value={form.name}
@@ -76,7 +76,7 @@ export default function BatchManagement() {
                                 />
                             </div>
                             <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-600">Assign Trainer</label>
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px]">Assign Trainer</label>
                                 <input
                                     type="text"
                                     value={form.trainer}
@@ -86,7 +86,7 @@ export default function BatchManagement() {
                                 />
                             </div>
                             <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-600">Start Time</label>
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px]">Start Time</label>
                                 <input
                                     type="time"
                                     value={form.startTime}
@@ -95,7 +95,7 @@ export default function BatchManagement() {
                                 />
                             </div>
                             <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-600">Days</label>
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px]">Days</label>
                                 <input
                                     type="text"
                                     value={form.days}
@@ -112,44 +112,44 @@ export default function BatchManagement() {
                 )}
 
                 <div className="glass-card overflow-hidden">
-                    <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+                    <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                         <div className="relative w-72">
                             <Search size={18} className="absolute left-4 top-3 text-slate-400" />
                             <input
                                 type="text"
                                 placeholder="Search batches..."
-                                className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-accent"
+                                className="w-full pl-11 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl outline-none focus:border-accent text-white placeholder:text-slate-600"
                             />
                         </div>
                         <div className="flex gap-2">
-                            <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-xs font-bold uppercase tracking-wider">Active: {batches.length}</span>
+                            <span className="px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold uppercase tracking-wider">Active: {batches.length}</span>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 divide-x divide-y divide-slate-100">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 divide-x divide-y divide-white/5">
                         {batches.map((batch) => (
-                            <div key={batch.id} className="p-6 hover:bg-slate-50/50 transition-colors group">
+                            <div key={batch.id} className="p-6 hover:bg-white/[0.02] transition-colors group text-left">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="p-3 bg-accent/10 text-accent rounded-2xl group-hover:bg-accent group-hover:text-white transition-all cursor-default shadow-sm">
                                         <BookOpen size={24} />
                                     </div>
                                     <button
                                         onClick={() => deleteBatch(batch.id)}
-                                        className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                        className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                                     >
                                         <Trash2 size={18} />
                                     </button>
                                 </div>
-                                <h4 className="text-lg font-bold mb-1">{batch.name}</h4>
+                                <h4 className="text-lg font-bold mb-1 text-white">{batch.name}</h4>
                                 <p className="text-sm font-medium text-slate-400 mb-6 flex items-center gap-2">
                                     <Clock size={14} /> {batch.startTime} • {batch.days}
                                 </p>
-                                <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                                <div className="flex items-center justify-between pt-4 border-t border-white/5">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">
+                                        <div className="w-8 h-8 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-xs font-bold text-white">
                                             {batch.trainer.charAt(0)}
                                         </div>
-                                        <span className="text-sm font-semibold text-slate-600">{batch.trainer}</span>
+                                        <span className="text-sm font-semibold text-slate-400">{batch.trainer}</span>
                                     </div>
                                     <button className="text-accent underline text-xs font-bold hover:text-accent-hover transition-colors">
                                         Manage Students

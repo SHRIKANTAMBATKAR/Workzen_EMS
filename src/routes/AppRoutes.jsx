@@ -23,6 +23,10 @@ export default function AppRoutes() {
 
         {/* Admin */}
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/trainers" element={<TrainerManagement />} />
+        <Route path="/admin/analysts" element={<AnalystManagement />} />
+        <Route path="/admin/counselors" element={<CounselorManagement />} />
+        <Route path="/admin/all-users" element={<AllUsersList />} />
         <Route path="/admin/users" element={<UserManagement />} />
 
         {/* Analyst */}

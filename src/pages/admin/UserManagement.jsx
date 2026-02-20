@@ -103,11 +103,11 @@ export default function UserManagement() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 text-left">
                     <div>
                         <h2 className="text-5xl font-extrabold tracking-tight text-white mb-3">Staff Directory</h2>
-                        <p className="text-indigo-200/60 text-xl font-medium">Provision and manage institute access.</p>
+                        <p className="text-slate-400 text-xl font-medium text-left">Provision and manage institute access.</p>
                     </div>
                     <button
                         onClick={() => navigate("/admin")}
-                        className="group bg-white/5 backdrop-blur-md border border-white/10 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-white/10 transition-all shadow-xl"
+                        className="group bg-white/5 border border-white/10 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-white/10 transition-all shadow-sm"
                     >
                         <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                         Dashboard
@@ -117,7 +117,7 @@ export default function UserManagement() {
                 <div className="grid lg:grid-cols-12 gap-10">
                     {/* Add User Form Section */}
                     <div className="lg:col-span-4 space-y-6">
-                        <div className="glass-card-dark p-10 h-fit lg:sticky lg:top-32 relative overflow-hidden bg-black/30 border-white/5">
+                        <div className="glass-card p-10 h-fit lg:sticky lg:top-32 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-3xl"></div>
 
                             <div className="flex items-center gap-4 mb-10 relative z-10">
@@ -126,43 +126,43 @@ export default function UserManagement() {
                                 </div>
                                 <div>
                                     <h3 className="text-2xl font-bold text-white tracking-tight">Provision Member</h3>
-                                    <p className="text-xs text-indigo-300/40 uppercase font-black tracking-widest mt-1">Access Control</p>
+                                    <p className="text-xs text-slate-500 uppercase font-black tracking-widest mt-1">Access Control</p>
                                 </div>
                             </div>
 
                             <form onSubmit={handleAddUser} className="space-y-8 relative z-10 text-left">
                                 <div className="space-y-3">
-                                    <label className="text-xs font-black text-indigo-200/40 uppercase tracking-widest ml-1">Member Name</label>
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Member Name</label>
                                     <div className="relative group">
-                                        <User size={20} className="absolute left-5 top-4.5 text-indigo-300/30 group-focus-within:text-accent transition-colors" />
+                                        <User size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-accent transition-colors" />
                                         <input
                                             type="text"
                                             placeholder="Enter full name"
                                             value={form.name}
                                             onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all text-white font-medium placeholder:text-indigo-300/20"
+                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all text-white font-medium placeholder:text-slate-700"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="text-xs font-black text-indigo-200/40 uppercase tracking-widest ml-1">Email Endpoint</label>
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Email Endpoint</label>
                                     <div className="relative group">
-                                        <Mail size={20} className="absolute left-5 top-4.5 text-indigo-300/30 group-focus-within:text-accent transition-colors" />
+                                        <Mail size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-accent transition-colors" />
                                         <input
                                             type="email"
                                             placeholder="member@workzen.com"
                                             value={form.email}
                                             onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all text-white font-medium placeholder:text-indigo-300/20"
+                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all text-white font-medium placeholder:text-slate-700"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="text-xs font-black text-indigo-200/40 uppercase tracking-widest ml-1">System Privilege</label>
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">System Privilege</label>
                                     <div className="relative group">
-                                        <Shield size={20} className="absolute left-5 top-4.5 text-indigo-300/30 group-focus-within:text-accent transition-colors" />
+                                        <Shield size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-accent transition-colors" />
                                         <select
                                             value={form.role}
                                             onChange={(e) => setForm({ ...form, role: e.target.value })}
@@ -195,27 +195,27 @@ export default function UserManagement() {
                                     placeholder="Search directory..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-12 pr-6 py-3.5 bg-white/5 border border-white/5 rounded-2xl outline-none focus:bg-white/10 focus:border-white/20 transition-all text-sm text-white placeholder:text-indigo-200/20 font-medium"
+                                    className="w-full pl-12 pr-6 py-3.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 transition-all text-sm text-white placeholder:text-slate-700 font-medium"
                                 />
                             </div>
                             <div className="flex gap-3 w-full sm:w-auto">
-                                <button className="flex-1 sm:flex-none px-6 py-3.5 bg-white/5 border border-white/5 rounded-2xl text-xs font-bold text-indigo-100 flex items-center justify-center gap-3 hover:bg-white/10 transition-all">
+                                <button className="flex-1 sm:flex-none px-6 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-xs font-bold text-white flex items-center justify-center gap-3 hover:bg-white/10 transition-all">
                                     <Filter size={16} />
                                     Filter
                                 </button>
-                                <button className="flex-1 sm:flex-none px-6 py-3.5 bg-white/5 border border-white/5 rounded-2xl text-xs font-bold text-indigo-100 flex items-center justify-center gap-3 hover:bg-white/10 transition-all">
+                                <button className="flex-1 sm:flex-none px-6 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-xs font-bold text-white flex items-center justify-center gap-3 hover:bg-white/10 transition-all">
                                     Export CSV
                                 </button>
                             </div>
                         </div>
 
-                        <div className="glass-card-dark overflow-hidden border-white/5 shadow-2xl bg-black/10">
+                        <div className="glass-card overflow-hidden">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="bg-white/5">
-                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-indigo-200/40">Member Endpoint</th>
-                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-indigo-200/40">Privilege Level</th>
-                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-indigo-200/40 text-right">Operations</th>
+                                    <tr className="bg-white/[0.02] border-b border-white/5 text-left">
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Member Endpoint</th>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Privilege Level</th>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 text-right">Operations</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
@@ -223,12 +223,12 @@ export default function UserManagement() {
                                         <tr key={u.id} className="hover:bg-white/[0.02] transition-colors group">
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-5">
-                                                    <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-indigo-100 group-hover:bg-accent/20 group-hover:text-white transition-all font-black text-sm border border-white/10">
+                                                    <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-white group-hover:bg-accent transition-all font-black text-sm border border-white/10">
                                                         {u.name.substring(0, 2).toUpperCase()}
                                                     </div>
-                                                    <div>
+                                                    <div className="text-left">
                                                         <p className="font-bold text-lg text-white group-hover:text-accent transition-colors">{u.name}</p>
-                                                        <p className="text-xs text-indigo-200/40 font-medium tracking-wide">{u.email}</p>
+                                                        <p className="text-xs text-slate-500 font-medium tracking-wide">{u.email}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -245,7 +245,7 @@ export default function UserManagement() {
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(u.id)}
-                                                        className="p-3 text-indigo-200/40 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all"
+                                                        className="p-3 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
                                                     >
                                                         <Trash2 size={18} />
                                                     </button>
@@ -269,7 +269,7 @@ export default function UserManagement() {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="flex items-center justify-between text-[10px] font-black text-indigo-200/20 uppercase tracking-[0.3em] px-2">
+                        <div className="flex items-center justify-between text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] px-2">
                             <span>Showing {filteredUsers.length} of {users.length} Records</span>
                             <span>Secure Endpoint: 0x482..f2</span>
                         </div>

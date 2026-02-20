@@ -34,14 +34,14 @@ export default function DashboardLayout({ children, allowedRoles = [] }) {
     if (!user) return null;
 
     return (
-        <div className="flex min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#312e81] text-white">
+        <div className="flex min-h-screen bg-[#020617] text-white">
             <Sidebar role={user.role} onLogout={handleLogout} />
 
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
                 {/* Background decorative elements */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-5"></div>
-                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-overlay filter blur-3xl opacity-5"></div>
+                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/5 rounded-full filter blur-3xl opacity-30"></div>
+                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-500/5 rounded-full filter blur-3xl opacity-30"></div>
                 </div>
 
                 <Navbar user={user} />
