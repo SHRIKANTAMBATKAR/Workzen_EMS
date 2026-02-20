@@ -119,6 +119,7 @@ export default function AnalystDashboard() {
                     </div>
                 </div>
             </div>
+
         </DashboardLayout>
     );
 }
