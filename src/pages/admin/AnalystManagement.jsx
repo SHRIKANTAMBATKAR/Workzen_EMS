@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { UserPlus, Trash2, Mail, Shield, User, ArrowLeft, Search, Filter, Edit2, Phone, Key } from "lucide-react";
+import { UserPlus, Trash2, Mail, Shield, User, ArrowLeft, Search, Filter, Edit2, Phone, Key, Calendar, Code, Briefcase, GraduationCap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -17,6 +17,10 @@ export default function AnalystManagement() {
         email: "",
         mobile: "",
         role: "ANALYST",
+        specialization: "",
+        experience_years: "",
+        qualification: "",
+        joinDate: "",
     });
 
     useEffect(() => {
@@ -38,7 +42,7 @@ export default function AnalystManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.email || !form.mobile) {
+        if (!form.name || !form.email || !form.mobile || !form.specialization || !form.experience_years || !form.qualification || !form.joinDate) {
             toast.error("Please fill all required fields");
             return;
         }
@@ -54,7 +58,16 @@ export default function AnalystManagement() {
                 if (response.ok) {
                     toast.success("Analyst profile updated successfully");
                     setEditingUser(null);
-                    setForm({ name: "", email: "", mobile: "", role: "ANALYST" });
+                    setForm({
+                        name: "",
+                        email: "",
+                        mobile: "",
+                        role: "ANALYST",
+                        specialization: "",
+                        experience_years: "",
+                        qualification: "",
+                        joinDate: "",
+                    });
                     fetchUsers();
                 } else {
                     throw new Error();
@@ -75,7 +88,16 @@ export default function AnalystManagement() {
 
                 if (response.ok) {
                     toast.success("Analyst account initialized");
-                    setForm({ name: "", email: "", mobile: "", role: "ANALYST" });
+                    setForm({
+                        name: "",
+                        email: "",
+                        mobile: "",
+                        role: "ANALYST",
+                        specialization: "",
+                        experience_years: "",
+                        qualification: "",
+                        joinDate: "",
+                    });
                     fetchUsers();
                 } else {
                     throw new Error();
@@ -111,6 +133,10 @@ export default function AnalystManagement() {
             email: user.email,
             mobile: user.mobile || "",
             role: user.role,
+            specialization: user.specialization || "",
+            experience_years: user.experience_years || "",
+            qualification: user.qualification || "",
+            joinDate: user.joinDate || "",
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -200,6 +226,63 @@ export default function AnalystManagement() {
                                     </div>
                                 </div>
 
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-3">
+                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Join Date</label>
+                                        <div className="relative group">
+                                            <Calendar size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                            <input
+                                                type="date"
+                                                value={form.joinDate}
+                                                onChange={(e) => setForm({ ...form, joinDate: e.target.value })}
+                                                className="w-full pl-14 pr-4 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium [color-scheme:dark]"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Experience (Years)</label>
+                                        <div className="relative group">
+                                            <Briefcase size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                            <input
+                                                type="number"
+                                                placeholder="0"
+                                                value={form.experience_years}
+                                                onChange={(e) => setForm({ ...form, experience_years: e.target.value })}
+                                                className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Specialization</label>
+                                    <div className="relative group">
+                                        <Code size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. Security, Architecture"
+                                            value={form.specialization}
+                                            onChange={(e) => setForm({ ...form, specialization: e.target.value })}
+                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Qualification</label>
+                                    <div className="relative group">
+                                        <GraduationCap size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. MCA, B.E. IT"
+                                            value={form.qualification}
+                                            onChange={(e) => setForm({ ...form, qualification: e.target.value })}
+                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                        />
+                                    </div>
+                                </div>
+
                                 <div className="flex gap-4">
                                     <button type="submit" className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/20 transition-all active:scale-95 flex items-center justify-center gap-3">
                                         {editingUser ? "Update Profile" : "Initialize Account"}
@@ -242,13 +325,14 @@ export default function AnalystManagement() {
                                 <thead>
                                     <tr className="bg-white/[0.02] border-b border-white/5 text-left">
                                         <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Analyst Info</th>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Expertise & Experience</th>
                                         <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Credentials</th>
                                         <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 text-right">Operations</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
                                     {loading ? (
-                                        <tr><td colSpan="3" className="px-8 py-10 text-center text-slate-500">Loading systems data...</td></tr>
+                                        <tr><td colSpan="4" className="px-8 py-10 text-center text-slate-500">Loading systems data...</td></tr>
                                     ) : filteredUsers.map((u) => (
                                         <tr key={u.id} className="hover:bg-white/[0.02] border-b border-white/5 transition-colors group">
                                             <td className="px-8 py-6">
@@ -258,17 +342,35 @@ export default function AnalystManagement() {
                                                     </div>
                                                     <div className="text-left">
                                                         <p className="font-bold text-lg text-white group-hover:text-emerald-400 transition-colors">{u.name}</p>
-                                                        <div className="flex items-center gap-3 mt-1">
+                                                        <div className="flex flex-col gap-1 mt-1">
                                                             <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5"><Mail size={12} /> {u.email}</p>
-                                                            <span className="w-1 h-1 rounded-full bg-slate-700"></span>
                                                             <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5"><Phone size={12} /> {u.mobile || 'No Mobile'}</p>
+                                                            <p className="text-[10px] text-emerald-500/60 font-black uppercase tracking-widest flex items-center gap-1.5 mt-1"><Calendar size={10} /> Joined: {u.joinDate || 'N/A'}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <div className="space-y-2 text-left">
+                                                    <div>
+                                                        <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Specialization</p>
+                                                        <p className="text-sm text-white font-medium">{u.specialization || 'N/A'}</p>
+                                                    </div>
+                                                    <div className="flex gap-4">
+                                                        <div>
+                                                            <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Experience</p>
+                                                            <p className="text-xs text-slate-400">{u.experience_years ? `${u.experience_years} Years` : 'N/A'}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Qualification</p>
+                                                            <p className="text-xs text-slate-400">{u.qualification || 'N/A'}</p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
                                                 <div className="space-y-1 text-left">
-                                                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Access Key</p>
+                                                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Password</p>
                                                     <p className="text-sm font-mono text-emerald-400 flex items-center gap-2">
                                                         <Key size={14} className="text-emerald-500" />
                                                         {u.password}

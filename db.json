@@ -16,7 +16,11 @@
       "password": "trainer123",
       "role": "TRAINER",
       "mobile": "9123456780",
-      "active": true
+      "active": true,
+      "joiningDate": "2024-01-15",
+      "primarySkills": "React, JavaScript",
+      "experienceYears": "5",
+      "qualification": "B.E. Computer Science"
     },
     {
       "id": "3",
@@ -25,7 +29,11 @@
       "password": "analyst123",
       "role": "ANALYST",
       "mobile": "9234567891",
-      "active": true
+      "active": true,
+      "specialization": "Security Analysis",
+      "experience_years": "4",
+      "qualification": "B.Sc CS",
+      "joinDate": "2023-05-12"
     },
     {
       "id": "4",
@@ -34,7 +42,11 @@
       "password": "counselor123",
       "role": "COUNSELOR",
       "mobile": "9345678902",
-      "active": true
+      "active": true,
+      "assignedRegion": "North",
+      "experienceYears": "3",
+      "qualification": "MBA",
+      "leadExpertise": "Career Counseling"
     },
     {
       "id": "5",
@@ -52,7 +64,11 @@
       "role": "ANALYST",
       "password": "staff123",
       "mobile": "9567890124",
-      "active": true
+      "active": true,
+      "specialization": "Systems Architecture",
+      "experience_years": "6",
+      "qualification": "B.E. IT",
+      "joinDate": "2024-01-10"
     },
     {
       "id": "1771571626456",
@@ -61,7 +77,11 @@
       "role": "TRAINER",
       "password": "staff123",
       "mobile": "9678901235",
-      "active": true
+      "active": true,
+      "joiningDate": "2024-02-10",
+      "primarySkills": "Python, Data Science",
+      "experienceYears": "3",
+      "qualification": "MCA"
     },
     {
       "id": "1771572515676",
@@ -70,7 +90,11 @@
       "role": "COUNSELOR",
       "password": "staff123",
       "mobile": "9789012346",
-      "active": true
+      "active": true,
+      "assignedRegion": "West",
+      "experienceYears": "5",
+      "qualification": "Masters in Psychology",
+      "leadExpertise": "Emotional Intelligence"
     },
     {
       "id": "1771585981985",
@@ -78,6 +102,49 @@
       "email": "sandip@gamil.com",
       "mobile": "65699896626",
       "role": "TRAINER",
+      "password": "staff123",
+      "active": true,
+      "joiningDate": "2024-02-20",
+      "primarySkills": "Java, Spring Boot",
+      "experienceYears": "4",
+      "qualification": "B.Tech"
+    },
+    {
+      "id": "1771839928594",
+      "name": "pratik rane",
+      "email": "pratic@gmail.com",
+      "mobile": "8998897884",
+      "role": "TRAINER",
+      "joiningDate": "2026-02-14",
+      "primarySkills": "java",
+      "experienceYears": "10",
+      "qualification": "b.tch",
+      "password": "staff123",
+      "active": true
+    },
+    {
+      "id": "1771842053078",
+      "name": "raju meshram",
+      "email": "raju@gmail.com",
+      "mobile": "9889599869",
+      "role": "ANALYST",
+      "specialization": "security",
+      "experience_years": "-1",
+      "qualification": "mca",
+      "joinDate": "2026-02-11",
+      "password": "staff123",
+      "active": true
+    },
+    {
+      "id": "1771842280398",
+      "name": "Rameshwar",
+      "email": "rameshwar@gmail.com",
+      "mobile": "9845875695",
+      "role": "COUNSELOR",
+      "assignedRegion": "Ameerpeth",
+      "experienceYears": "-1",
+      "qualification": "BA",
+      "leadExpertise": "Career Counseling",
       "password": "staff123",
       "active": true
     }
