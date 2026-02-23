@@ -22,7 +22,6 @@ export default function Sidebar({ role, onLogout }) {
             { name: "Manage Analysts", path: "/admin/analysts", icon: BarChart3 },
             { name: "Manage Counselors", path: "/admin/counselors", icon: Users },
             { name: "All User Directory", path: "/admin/all-users", icon: Users },
-            { name: "Settings", path: "/admin/settings", icon: Settings },
         ],
         TRAINER: [
             { name: "My Batches", path: "/trainer", icon: BookOpen },
