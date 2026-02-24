@@ -64,7 +64,7 @@ export default function AdminDashboard() {
             <div className="p-3 bg-white/5 rounded-xl text-slate-400 border border-white/10">
               <Activity size={24} />
             </div>
-            <h3 className="text-3xl font-bold text-white tracking-tight">System Overview</h3>
+            <h3 className="text-3xl font-bold text-white tracking-tight">System Overview </h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {statCards.map((card, idx) => (
