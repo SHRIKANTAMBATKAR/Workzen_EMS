@@ -96,10 +96,10 @@ export default function TrainerDashboard() {
                         </div>
                     </div>
 
-                    <div className="glass-card p-8 bg-slate-50 border-none shadow-none">
+                    <div className="glass-card p-8">
                         <div className="flex justify-between items-center mb-8">
                             <h3 className="text-xl font-bold">Session Logs</h3>
-                            <button className="text-xs font-bold text-slate-400 hover:text-slate-600">View History</button>
+                            <button className="text-xs font-bold text-slate-500 hover:text-slate-400">View History</button>
                         </div>
                         <div className="space-y-6">
                             {[
@@ -108,18 +108,18 @@ export default function TrainerDashboard() {
                             ].map((log, idx) => (
                                 <div key={idx} className="flex gap-4">
                                     <div className="flex flex-col items-center">
-                                        <div className="w-2 h-2 rounded-full bg-accent mt-1.5"></div>
-                                        <div className="w-0.5 h-full bg-slate-200 mt-1"></div>
+                                        <div className="w-2 h-2 rounded-full bg-accent mt-1.5 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+                                        <div className="w-0.5 h-full bg-white/10 mt-1"></div>
                                     </div>
                                     <div className="pb-6">
-                                        <p className="text-xs font-bold text-slate-400 uppercase mb-1">{log.date}</p>
-                                        <p className="text-sm font-bold">{log.topic}</p>
-                                        <p className="text-xs text-slate-500">{log.batch}</p>
+                                        <p className="text-xs font-bold text-slate-500 uppercase mb-1">{log.date}</p>
+                                        <p className="text-sm font-bold text-white">{log.topic}</p>
+                                        <p className="text-xs text-slate-400">{log.batch}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <button className="w-full py-3 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 font-bold text-sm hover:bg-white hover:border-slate-300 transition-all flex items-center justify-center gap-2">
+                        <button className="w-full py-3 border-2 border-dashed border-white/5 rounded-2xl text-slate-500 font-bold text-sm hover:bg-white/5 hover:border-white/10 transition-all flex items-center justify-center gap-2">
                             <PlayCircle size={18} /> Add Training Log
                         </button>
                     </div>
