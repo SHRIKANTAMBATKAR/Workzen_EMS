@@ -17,6 +17,7 @@ export default function CounselorManagement() {
         email: "",
         mobile: "",
         role: "COUNSELOR",
+        password: "",
         assignedRegion: "",
         experienceYears: "",
         qualification: "",
@@ -42,7 +43,7 @@ export default function CounselorManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.email || !form.mobile || !form.assignedRegion || !form.experienceYears || !form.qualification || !form.leadExpertise) {
+        if (!form.name || !form.email || !form.mobile || !form.password || !form.assignedRegion || !form.experienceYears || !form.qualification || !form.leadExpertise) {
             toast.error("Please fill all required fields");
             return;
         }
@@ -63,6 +64,7 @@ export default function CounselorManagement() {
                         email: "",
                         mobile: "",
                         role: "COUNSELOR",
+                        password: "",
                         assignedRegion: "",
                         experienceYears: "",
                         qualification: "",
@@ -76,7 +78,6 @@ export default function CounselorManagement() {
                 const newUser = {
                     id: String(Date.now()),
                     ...form,
-                    password: "staff123",
                     active: true
                 };
 
@@ -93,6 +94,7 @@ export default function CounselorManagement() {
                         email: "",
                         mobile: "",
                         role: "COUNSELOR",
+                        password: "",
                         assignedRegion: "",
                         experienceYears: "",
                         qualification: "",
@@ -133,6 +135,7 @@ export default function CounselorManagement() {
             email: user.email,
             mobile: user.mobile || "",
             role: user.role,
+            password: user.password || "",
             assignedRegion: user.assignedRegion || "",
             experienceYears: user.experienceYears || "",
             qualification: user.qualification || "",
@@ -226,6 +229,20 @@ export default function CounselorManagement() {
                                     </div>
                                 </div>
 
+                                <div className="space-y-3">
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Access Password</label>
+                                    <div className="relative group">
+                                        <Key size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                                        <input
+                                            type="text"
+                                            placeholder="Set secure password"
+                                            value={form.password}
+                                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                        />
+                                    </div>
+                                </div>
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-3">
                                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Assigned Region</label>
@@ -294,7 +311,7 @@ export default function CounselorManagement() {
                                             type="button"
                                             onClick={() => {
                                                 setEditingUser(null);
-                                                setForm({ name: "", email: "", mobile: "", role: "COUNSELOR" });
+                                                setForm({ name: "", email: "", mobile: "", role: "COUNSELOR", password: "" });
                                             }}
                                             className="px-6 bg-white/5 text-slate-400 rounded-2xl border border-white/10 font-bold hover:bg-white/10 transition-all"
                                         >
@@ -369,6 +386,15 @@ export default function CounselorManagement() {
                                                     </div>
                                                 </div>
                                             </td>
+                                            <td className="px-8 py-6">
+                                                <div className="space-y-1 text-left">
+                                                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Password</p>
+                                                    <p className="text-sm font-mono text-purple-400 flex items-center gap-2">
+                                                        <Key size={14} className="text-purple-500" />
+                                                        {u.password}
+                                                    </p>
+                                                </div>
+                                            </td>
                                             <td className="px-8 py-6 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button
@@ -393,6 +419,6 @@ export default function CounselorManagement() {
                     </div>
                 </div>
             </div>
-        </DashboardLayout>
+        </DashboardLayout >
     );
 }

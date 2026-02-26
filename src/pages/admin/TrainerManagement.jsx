@@ -17,6 +17,7 @@ export default function TrainerManagement() {
         email: "",
         mobile: "",
         role: "TRAINER",
+        password: "",
         joiningDate: "",
         primarySkills: "",
         experienceYears: "",
@@ -42,7 +43,7 @@ export default function TrainerManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.email || !form.mobile || !form.joiningDate || !form.primarySkills || !form.experienceYears || !form.qualification) {
+        if (!form.name || !form.email || !form.mobile || !form.password || !form.joiningDate || !form.primarySkills || !form.experienceYears || !form.qualification) {
             toast.error("Please fill all required fields");
             return;
         }
@@ -63,6 +64,7 @@ export default function TrainerManagement() {
                         email: "",
                         mobile: "",
                         role: "TRAINER",
+                        password: "",
                         joiningDate: "",
                         primarySkills: "",
                         experienceYears: "",
@@ -76,7 +78,6 @@ export default function TrainerManagement() {
                 const newUser = {
                     id: String(Date.now()),
                     ...form,
-                    password: "staff123",
                     active: true
                 };
 
@@ -93,6 +94,7 @@ export default function TrainerManagement() {
                         email: "",
                         mobile: "",
                         role: "TRAINER",
+                        password: "",
                         joiningDate: "",
                         primarySkills: "",
                         experienceYears: "",
@@ -133,6 +135,7 @@ export default function TrainerManagement() {
             email: user.email,
             mobile: user.mobile || "",
             role: user.role,
+            password: user.password || "",
             joiningDate: user.joiningDate || "",
             primarySkills: user.primarySkills || "",
             experienceYears: user.experienceYears || "",
@@ -226,6 +229,20 @@ export default function TrainerManagement() {
                                     </div>
                                 </div>
 
+                                <div className="space-y-3">
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Access Password</label>
+                                    <div className="relative group">
+                                        <Key size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <input
+                                            type="text"
+                                            placeholder="Set secure password"
+                                            value={form.password}
+                                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                        />
+                                    </div>
+                                </div>
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-3">
                                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Joining Date</label>
@@ -293,7 +310,7 @@ export default function TrainerManagement() {
                                             type="button"
                                             onClick={() => {
                                                 setEditingUser(null);
-                                                setForm({ name: "", email: "", mobile: "", role: "TRAINER" });
+                                                setForm({ name: "", email: "", mobile: "", role: "TRAINER", password: "" });
                                             }}
                                             className="px-6 bg-white/5 text-slate-400 rounded-2xl border border-white/10 font-bold hover:bg-white/10 transition-all"
                                         >

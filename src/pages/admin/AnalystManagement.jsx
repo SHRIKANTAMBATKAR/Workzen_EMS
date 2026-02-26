@@ -17,6 +17,7 @@ export default function AnalystManagement() {
         email: "",
         mobile: "",
         role: "ANALYST",
+        password: "",
         specialization: "",
         experience_years: "",
         qualification: "",
@@ -42,7 +43,7 @@ export default function AnalystManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.email || !form.mobile || !form.specialization || !form.experience_years || !form.qualification || !form.joinDate) {
+        if (!form.name || !form.email || !form.mobile || !form.password || !form.specialization || !form.experience_years || !form.qualification || !form.joinDate) {
             toast.error("Please fill all required fields");
             return;
         }
@@ -63,6 +64,7 @@ export default function AnalystManagement() {
                         email: "",
                         mobile: "",
                         role: "ANALYST",
+                        password: "",
                         specialization: "",
                         experience_years: "",
                         qualification: "",
@@ -76,7 +78,6 @@ export default function AnalystManagement() {
                 const newUser = {
                     id: String(Date.now()),
                     ...form,
-                    password: "staff123",
                     active: true
                 };
 
@@ -93,6 +94,7 @@ export default function AnalystManagement() {
                         email: "",
                         mobile: "",
                         role: "ANALYST",
+                        password: "",
                         specialization: "",
                         experience_years: "",
                         qualification: "",
@@ -133,6 +135,7 @@ export default function AnalystManagement() {
             email: user.email,
             mobile: user.mobile || "",
             role: user.role,
+            password: user.password || "",
             specialization: user.specialization || "",
             experience_years: user.experience_years || "",
             qualification: user.qualification || "",
@@ -226,6 +229,20 @@ export default function AnalystManagement() {
                                     </div>
                                 </div>
 
+                                <div className="space-y-3">
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Access Password</label>
+                                    <div className="relative group">
+                                        <Key size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                        <input
+                                            type="text"
+                                            placeholder="Set secure password"
+                                            value={form.password}
+                                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                        />
+                                    </div>
+                                </div>
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-3">
                                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Join Date</label>
@@ -261,7 +278,7 @@ export default function AnalystManagement() {
                                         <Code size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
                                         <input
                                             type="text"
-                                            placeholder="e.g. Security, Architecture"
+                                            placeholder="e.g. Java Full Stack , Python Full Stack"
                                             value={form.specialization}
                                             onChange={(e) => setForm({ ...form, specialization: e.target.value })}
                                             className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
@@ -293,7 +310,7 @@ export default function AnalystManagement() {
                                             type="button"
                                             onClick={() => {
                                                 setEditingUser(null);
-                                                setForm({ name: "", email: "", mobile: "", role: "ANALYST" });
+                                                setForm({ name: "", email: "", mobile: "", role: "ANALYST", password: "" });
                                             }}
                                             className="px-6 bg-white/5 text-slate-400 rounded-2xl border border-white/10 font-bold hover:bg-white/10 transition-all"
                                         >

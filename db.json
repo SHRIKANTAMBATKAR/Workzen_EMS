@@ -89,7 +89,7 @@
       "email": "sandip@gamil.com",
       "mobile": "65699896626",
       "role": "TRAINER",
-      "password": "staff123",
+      "password": "sandip123",
       "active": true,
       "joiningDate": "2024-02-20",
       "primarySkills": "Java, Spring Boot",
@@ -106,7 +106,7 @@
       "primarySkills": "java",
       "experienceYears": "10",
       "qualification": "b.tch",
-      "password": "staff123",
+      "password": "pratic123",
       "active": true
     },
     {
@@ -116,7 +116,7 @@
       "mobile": "9889599869",
       "role": "ANALYST",
       "specialization": "security",
-      "experience_years": "-1",
+      "experience_years": "1",
       "qualification": "mca",
       "joinDate": "2026-02-11",
       "password": "staff123",

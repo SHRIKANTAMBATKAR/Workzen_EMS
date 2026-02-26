@@ -15,6 +15,7 @@ export default function UserManagement() {
         name: "",
         email: "",
         role: "TRAINER",
+        password: "",
     });
 
     useEffect(() => {
@@ -36,7 +37,7 @@ export default function UserManagement() {
 
     const handleAddUser = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.email) {
+        if (!form.name || !form.email || !form.password) {
             toast.error("Please fill all fields");
             return;
         }
@@ -44,7 +45,6 @@ export default function UserManagement() {
         const newUser = {
             id: String(Date.now()),
             ...form,
-            password: "staff123", // default password for new staff
             active: true
         };
 
@@ -57,7 +57,7 @@ export default function UserManagement() {
 
             if (response.ok) {
                 toast.success("Staff profile initialized in database");
-                setForm({ name: "", email: "", role: "TRAINER" });
+                setForm({ name: "", email: "", role: "TRAINER", password: "" });
                 fetchUsers();
             } else {
                 throw new Error();
@@ -154,6 +154,20 @@ export default function UserManagement() {
                                             placeholder="member@workzen.com"
                                             value={form.email}
                                             onChange={(e) => setForm({ ...form, email: e.target.value })}
+                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all text-white font-medium placeholder:text-slate-700"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Access Password</label>
+                                    <div className="relative group">
+                                        <Key size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-accent transition-colors" />
+                                        <input
+                                            type="text"
+                                            placeholder="Set secure password"
+                                            value={form.password}
+                                            onChange={(e) => setForm({ ...form, password: e.target.value })}
                                             className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all text-white font-medium placeholder:text-slate-700"
                                         />
                                     </div>
