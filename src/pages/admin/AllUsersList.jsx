@@ -3,6 +3,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import { User, ArrowLeft, Search, Shield, Mail, Trash2, Phone, Key, Eye, X, Briefcase, GraduationCap, Calendar, MapPin, Star, UserCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import DeleteConfirmationModal from "../../components/common/DeleteConfirmationModal";
 
 const BASE_URL = "http://localhost:3001";
 
@@ -13,6 +14,8 @@ export default function AllUsersList() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedUser, setSelectedUser] = useState(null);
     const [isViewOpen, setIsViewOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
 
     useEffect(() => {
         fetchUsers();
@@ -31,16 +34,23 @@ export default function AllUsersList() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this user?")) return;
+    const handleDelete = (id) => {
+        setUserToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!userToDelete) return;
         try {
-            const response = await fetch(`${BASE_URL}/users/${id}`, {
+            const response = await fetch(`${BASE_URL}/users/${userToDelete}`, {
                 method: "DELETE",
             });
 
             if (response.ok) {
                 toast.success("User removed from system");
                 fetchUsers();
+                setIsDeleteModalOpen(false);
+                setUserToDelete(null);
             } else {
                 throw new Error();
             }
@@ -180,9 +190,9 @@ export default function AllUsersList() {
                     <div className="relative w-full max-w-2xl bg-slate-900/50 border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-500 group">
                         {/* Modal Header Decorative BG */}
                         <div className={`absolute top-0 inset-x-0 h-48 opacity-20 blur-3xl -z-10 bg-gradient-to-b ${selectedUser.role === 'ADMIN' ? 'from-red-600' :
-                                selectedUser.role === 'TRAINER' ? 'from-blue-600' :
-                                    selectedUser.role === 'ANALYST' ? 'from-emerald-600' :
-                                        'from-purple-600'
+                            selectedUser.role === 'TRAINER' ? 'from-blue-600' :
+                                selectedUser.role === 'ANALYST' ? 'from-emerald-600' :
+                                    'from-purple-600'
                             } to-transparent`}></div>
 
                         {/* Close Button */}
@@ -197,9 +207,9 @@ export default function AllUsersList() {
                             {/* User Identity Section */}
                             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
                                 <div className={`w-28 h-28 rounded-[2rem] flex items-center justify-center text-white text-4xl font-black border-4 border-white/5 shadow-2xl ${selectedUser.role === 'ADMIN' ? 'bg-red-500 shadow-red-500/20' :
-                                        selectedUser.role === 'TRAINER' ? 'bg-blue-500 shadow-blue-500/20' :
-                                            selectedUser.role === 'ANALYST' ? 'bg-emerald-500 shadow-emerald-500/20' :
-                                                'bg-purple-500 shadow-purple-500/20'
+                                    selectedUser.role === 'TRAINER' ? 'bg-blue-500 shadow-blue-500/20' :
+                                        selectedUser.role === 'ANALYST' ? 'bg-emerald-500 shadow-emerald-500/20' :
+                                            'bg-purple-500 shadow-purple-500/20'
                                     }`}>
                                     {selectedUser.name.substring(0, 2).toUpperCase()}
                                 </div>
@@ -289,6 +299,17 @@ export default function AllUsersList() {
                     </div>
                 </div>
             )}
+
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => {
+                    setIsDeleteModalOpen(false);
+                    setUserToDelete(null);
+                }}
+                onConfirm={confirmDelete}
+                title="Remove System Member"
+                message="Are you sure you want to permanently remove this user from the system directory? This action cannot be undone."
+            />
         </DashboardLayout>
     );
 }

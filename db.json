@@ -71,19 +71,6 @@
       "leadExpertise": "Emotional Intelligence"
     },
     {
-      "id": "1771585981985",
-      "name": "sandip",
-      "email": "sandip@gamil.com",
-      "mobile": "65699896626",
-      "role": "TRAINER",
-      "password": "sandip123",
-      "active": true,
-      "joiningDate": "2024-02-20",
-      "primarySkills": "Java, Spring Boot",
-      "experienceYears": "4",
-      "qualification": "B.Tech"
-    },
-    {
       "id": "1771842280398",
       "name": "Rameshwar",
       "email": "rameshwar@gmail.com",
@@ -94,6 +81,19 @@
       "qualification": "BA",
       "leadExpertise": "Career Counseling",
       "password": "staff123",
+      "active": true
+    },
+    {
+      "id": "1772085941738",
+      "name": "mohan sham",
+      "email": "mohan@gmail.com",
+      "mobile": "9887897879",
+      "role": "TRAINER",
+      "password": "mohan123",
+      "joiningDate": "2026-02-25",
+      "primarySkills": "react",
+      "experienceYears": "3",
+      "qualification": "BE",
       "active": true
     }
   ]

@@ -3,6 +3,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import { UserPlus, Trash2, Mail, Shield, User, ArrowLeft, Search, Filter, MoreVertical, Edit2, Phone, Key, Calendar, Code, Briefcase, GraduationCap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import DeleteConfirmationModal from "../../components/common/DeleteConfirmationModal";
 
 const BASE_URL = "http://localhost:3001";
 
@@ -12,6 +13,8 @@ export default function TrainerManagement() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [editingUser, setEditingUser] = useState(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -110,16 +113,23 @@ export default function TrainerManagement() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this trainer?")) return;
+    const handleDelete = (id) => {
+        setUserToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!userToDelete) return;
         try {
-            const response = await fetch(`${BASE_URL}/users/${id}`, {
+            const response = await fetch(`${BASE_URL}/users/${userToDelete}`, {
                 method: "DELETE",
             });
 
             if (response.ok) {
                 toast.success("Trainer removed from system");
                 fetchUsers();
+                setIsDeleteModalOpen(false);
+                setUserToDelete(null);
             } else {
                 throw new Error();
             }
@@ -418,6 +428,17 @@ export default function TrainerManagement() {
                     </div>
                 </div>
             </div>
+
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => {
+                    setIsDeleteModalOpen(false);
+                    setUserToDelete(null);
+                }}
+                onConfirm={confirmDelete}
+                title="Remove Trainer"
+                message="Are you sure you want to permanently remove this trainer from the system directory? This action cannot be undone."
+            />
         </DashboardLayout>
     );
 }
