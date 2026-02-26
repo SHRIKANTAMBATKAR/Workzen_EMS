@@ -96,5 +96,27 @@
       "qualification": "BE",
       "active": true
     }
+  ],
+  "batches": [
+    {
+      "id": "1",
+      "name": "React FastTrack",
+      "course": "Frontend Development",
+      "startTime": "09:00",
+      "days": "Mon, Wed, Fri",
+      "capacity": "25",
+      "trainerId": "2",
+      "status": "Inactive"
+    },
+    {
+      "id": "2",
+      "name": "Node API Mastery",
+      "course": "Backend Systems",
+      "startTime": "14:30",
+      "days": "Tue, Thu, Sat",
+      "capacity": "30",
+      "trainerId": "2",
+      "status": "Inactive"
+    }
   ]
 }

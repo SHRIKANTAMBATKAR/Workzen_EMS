@@ -53,6 +53,14 @@
   @apply w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl outline-none transition-all duration-200 focus:border-accent focus:ring-4 focus:ring-accent/10 text-white placeholder:text-slate-600;
 }
 
+@utility input-icon {
+  @apply absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 transition-colors pointer-events-none;
+}
+
+@utility input-premium-with-icon {
+  @apply input-premium pl-12;
+}
+
 @utility nav-link {
   @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-white/5 hover:text-white font-medium;
 }

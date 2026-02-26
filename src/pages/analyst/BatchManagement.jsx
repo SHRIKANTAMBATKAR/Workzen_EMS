@@ -1,47 +1,143 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { Plus, BookOpen, Clock, Calendar, Search, MoreVertical, Trash2 } from "lucide-react";
+import { Plus, BookOpen, Clock, Calendar, Search, MoreVertical, Trash2, Edit2, Users, CheckCircle, XCircle, Loader2, Type, UserCheck, Activity, GraduationCap } from "lucide-react";
 import { toast } from "react-hot-toast";
+import api from "../../services/api";
+import DeleteConfirmationModal from "../../components/common/DeleteConfirmationModal";
 
 export default function BatchManagement() {
     const [batches, setBatches] = useState([]);
+    const [trainers, setTrainers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
     const [showAdd, setShowAdd] = useState(false);
+    const [editingBatch, setEditingBatch] = useState(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [batchToDelete, setBatchToDelete] = useState(null);
     const [form, setForm] = useState({
         name: "",
-        trainer: "",
+        course: "",
         startTime: "",
         days: "",
+        capacity: "",
+        trainerId: "",
+        status: "Active"
     });
 
     useEffect(() => {
-        const stored = JSON.parse(localStorage.getItem("batches")) || [
-            { id: 1, name: "React Batch-01", trainer: "John Doe", startTime: "10:00 AM", days: "Mon, Wed, Fri" },
-            { id: 2, name: "NodeJS Batch-05", trainer: "Mike Ross", startTime: "02:00 PM", days: "Tue, Thu, Sat" },
-        ];
-        setBatches(stored);
+        fetchData();
     }, []);
 
-    const handleAddBatch = (e) => {
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const [batchRes, trainerRes] = await Promise.all([
+                api.get("/batches"),
+                api.get("/users?role=TRAINER")
+            ]);
+            setBatches(batchRes.data);
+            setTrainers(trainerRes.data);
+        } catch (error) {
+            toast.error("Failed to synchronize with server");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.trainer) {
-            toast.error("Please fill required fields");
+        if (!form.name || !form.course || !form.trainerId || !form.startTime || !form.days || !form.capacity) {
+            toast.error("Please fill all required fields");
             return;
         }
 
-        const newBatch = { id: Date.now(), ...form };
-        const updated = [...batches, newBatch];
-        setBatches(updated);
-        localStorage.setItem("batches", JSON.stringify(updated));
-        setForm({ name: "", trainer: "", startTime: "", days: "" });
-        setShowAdd(false);
-        toast.success("Batch created successfully");
+        setSubmitting(true);
+        try {
+            if (editingBatch) {
+                const response = await api.patch(`/batches/${editingBatch.id}`, form);
+                if (response.status === 200) {
+                    toast.success("Batch configuration updated");
+                    resetForm();
+                    fetchData();
+                }
+            } else {
+                const response = await api.post("/batches", {
+                    ...form,
+                    id: String(Date.now())
+                });
+                if (response.status === 201) {
+                    toast.success("New batch initialized");
+                    resetForm();
+                    fetchData();
+                }
+            }
+        } catch (error) {
+            toast.error("Server synchronization failed");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
-    const deleteBatch = (id) => {
-        const updated = batches.filter(b => b.id !== id);
-        setBatches(updated);
-        localStorage.setItem("batches", JSON.stringify(updated));
-        toast.success("Batch deleted");
+    const resetForm = () => {
+        setForm({
+            name: "",
+            course: "",
+            startTime: "",
+            days: "",
+            capacity: "",
+            trainerId: "",
+            status: "Active"
+        });
+        setEditingBatch(null);
+        setShowAdd(false);
+    };
+
+    const handleEdit = (batch) => {
+        setEditingBatch(batch);
+        setForm({
+            name: batch.name,
+            course: batch.course,
+            startTime: batch.startTime,
+            days: batch.days,
+            capacity: batch.capacity,
+            trainerId: batch.trainerId,
+            status: batch.status
+        });
+        setShowAdd(true);
+    };
+
+    const handleDelete = (id) => {
+        setBatchToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!batchToDelete) return;
+        setSubmitting(true);
+        try {
+            const response = await api.delete(`/batches/${batchToDelete}`);
+            if (response.status === 200) {
+                toast.success("Batch removed from system");
+                fetchData();
+                setIsDeleteModalOpen(false);
+                setBatchToDelete(null);
+            }
+        } catch (error) {
+            toast.error("Deletion failed");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const toggleStatus = async (batch) => {
+        const newStatus = batch.status === "Active" ? "Inactive" : "Active";
+        try {
+            await api.patch(`/batches/${batch.id}`, { status: newStatus });
+            toast.success(`Batch ${newStatus.toLowerCase()}`);
+            fetchData();
+        } catch (error) {
+            toast.error("Status update failed");
+        }
     };
 
     return (
@@ -63,49 +159,129 @@ export default function BatchManagement() {
 
                 {showAdd && (
                     <div className="glass-card p-8 animate-in zoom-in-95 duration-300 text-left">
-                        <h3 className="text-xl font-bold mb-6 text-white">Create New Batch</h3>
-                        <form onSubmit={handleAddBatch} className="grid md:grid-cols-4 gap-6">
-                            <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px]">Batch Name</label>
-                                <input
-                                    type="text"
-                                    value={form.name}
-                                    onChange={e => setForm({ ...form, name: e.target.value })}
-                                    className="input-premium"
-                                    placeholder="e.g. Python B-01"
-                                />
+                        <h3 className="text-xl font-bold mb-6 text-white">
+                            {editingBatch ? "Update Batch Configuration" : "Initialize New Batch"}
+                        </h3>
+                        <form onSubmit={handleSubmit} className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="space-y-2 text-left col-span-2">
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Batch Name</label>
+                                <div className="relative group">
+                                    <Type size={18} className="input-icon group-focus-within:text-accent transition-colors" />
+                                    <input
+                                        type="text"
+                                        value={form.name}
+                                        onChange={e => setForm({ ...form, name: e.target.value })}
+                                        className="input-premium-with-icon"
+                                        placeholder="e.g. FullStack Elite B1"
+                                    />
+                                </div>
                             </div>
-                            <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px]">Assign Trainer</label>
-                                <input
-                                    type="text"
-                                    value={form.trainer}
-                                    onChange={e => setForm({ ...form, trainer: e.target.value })}
-                                    className="input-premium"
-                                    placeholder="Trainer Name"
-                                />
+                            <div className="space-y-2 text-left col-span-2">
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Course Program</label>
+                                <div className="relative group">
+                                    <GraduationCap size={18} className="input-icon group-focus-within:text-accent transition-colors" />
+                                    <input
+                                        type="text"
+                                        value={form.course}
+                                        onChange={e => setForm({ ...form, course: e.target.value })}
+                                        className="input-premium-with-icon"
+                                        placeholder="e.g. Advanced System Design"
+                                    />
+                                </div>
                             </div>
+
                             <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px]">Start Time</label>
-                                <input
-                                    type="time"
-                                    value={form.startTime}
-                                    onChange={e => setForm({ ...form, startTime: e.target.value })}
-                                    className="input-premium"
-                                />
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Assigned Trainer</label>
+                                <div className="relative group">
+                                    <UserCheck size={18} className="input-icon group-focus-within:text-accent transition-colors" />
+                                    <select
+                                        value={form.trainerId}
+                                        onChange={e => setForm({ ...form, trainerId: e.target.value })}
+                                        className="input-premium-with-icon bg-slate-900/50 appearance-none cursor-pointer"
+                                    >
+                                        <option value="">Select Trainer</option>
+                                        {trainers.map(t => (
+                                            <option key={t.id} value={t.id}>{t.name}</option>
+                                        ))}
+                                    </select>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                                        <MoreVertical size={14} className="rotate-90" />
+                                    </div>
+                                </div>
                             </div>
+
                             <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px]">Days</label>
-                                <input
-                                    type="text"
-                                    value={form.days}
-                                    onChange={e => setForm({ ...form, days: e.target.value })}
-                                    className="input-premium"
-                                    placeholder="MWF, TTS..."
-                                />
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Start Time</label>
+                                <div className="relative group">
+                                    <Clock size={18} className="input-icon group-focus-within:text-accent transition-colors" />
+                                    <input
+                                        type="time"
+                                        value={form.startTime}
+                                        onChange={e => setForm({ ...form, startTime: e.target.value })}
+                                        className="input-premium-with-icon [color-scheme:dark]"
+                                    />
+                                </div>
                             </div>
-                            <div className="md:col-span-4 flex justify-end">
-                                <button type="submit" className="btn-premium-primary px-10">Save Batch</button>
+
+                            <div className="space-y-2 text-left">
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Operational Days</label>
+                                <div className="relative group">
+                                    <Calendar size={18} className="input-icon group-focus-within:text-accent transition-colors" />
+                                    <input
+                                        type="text"
+                                        value={form.days}
+                                        onChange={e => setForm({ ...form, days: e.target.value })}
+                                        className="input-premium-with-icon"
+                                        placeholder="e.g. Mon, Wed, Fri"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2 text-left">
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Student Capacity</label>
+                                <div className="relative group">
+                                    <Users size={18} className="input-icon group-focus-within:text-accent transition-colors" />
+                                    <input
+                                        type="number"
+                                        value={form.capacity}
+                                        onChange={e => setForm({ ...form, capacity: e.target.value })}
+                                        className="input-premium-with-icon"
+                                        placeholder="e.g. 30"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2 text-left col-span-2">
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Execution Status</label>
+                                <div className="relative group">
+                                    <Activity size={18} className="input-icon group-focus-within:text-accent transition-colors" />
+                                    <select
+                                        value={form.status}
+                                        onChange={e => setForm({ ...form, status: e.target.value })}
+                                        className="input-premium-with-icon bg-slate-900/50 appearance-none cursor-pointer"
+                                    >
+                                        <option value="Active">Operational / Active</option>
+                                        <option value="Inactive">Paused / Inactive</option>
+                                        <option value="Completed">Finalized / Completed</option>
+                                    </select>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                                        <MoreVertical size={14} className="rotate-90" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="md:col-span-2 lg:col-span-4 flex justify-end gap-3 mt-4">
+                                <button
+                                    type="button"
+                                    onClick={resetForm}
+                                    className="px-8 py-3 rounded-xl font-bold text-slate-500 hover:text-white transition-all hover:bg-white/5"
+                                >
+                                    Discard Changes
+                                </button>
+                                <button type="submit" disabled={submitting} className="btn-premium-primary px-10 flex items-center gap-2 shadow-accent/20 shadow-lg">
+                                    {submitting ? <Loader2 size={18} className="animate-spin" /> : editingBatch ? <CheckCircle size={18} /> : <Plus size={18} />}
+                                    {editingBatch ? "Update Configuration" : "Initialize Batch"}
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -127,39 +303,113 @@ export default function BatchManagement() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 divide-x divide-y divide-white/5">
-                        {batches.map((batch) => (
-                            <div key={batch.id} className="p-6 hover:bg-white/[0.02] transition-colors group text-left">
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="p-3 bg-accent/10 text-accent rounded-2xl group-hover:bg-accent group-hover:text-white transition-all cursor-default shadow-sm">
-                                        <BookOpen size={24} />
-                                    </div>
-                                    <button
-                                        onClick={() => deleteBatch(batch.id)}
-                                        className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
-                                </div>
-                                <h4 className="text-lg font-bold mb-1 text-white">{batch.name}</h4>
-                                <p className="text-sm font-medium text-slate-400 mb-6 flex items-center gap-2">
-                                    <Clock size={14} /> {batch.startTime} • {batch.days}
-                                </p>
-                                <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                                            {batch.trainer.charAt(0)}
+                        {batches.map((batch) => {
+                            const trainer = trainers.find(t => String(t.id) === String(batch.trainerId));
+                            return (
+                                <div key={batch.id} className="p-8 hover:bg-white/[0.02] transition-colors group text-left relative overflow-hidden">
+                                    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${batch.status === 'Active' ? 'from-emerald-500/5' : 'from-slate-500/5'} to-transparent blur-3xl opacity-0 group-hover:opacity-100 transition-opacity`}></div>
+
+                                    <div className="relative z-10 flex justify-between items-start mb-6">
+                                        <div className="flex gap-4 items-center">
+                                            <div className="p-4 bg-accent/10 text-accent rounded-2xl group-hover:bg-accent group-hover:text-white transition-all duration-500 shadow-sm border border-accent/20">
+                                                <BookOpen size={24} />
+                                            </div>
+                                            <div>
+                                                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter border ${batch.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                                                    batch.status === 'Completed' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                                                        'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                                                    }`}>
+                                                    {batch.status}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <span className="text-sm font-semibold text-slate-400">{batch.trainer}</span>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); handleEdit(batch); }}
+                                                className="p-2.5 text-slate-500 hover:text-accent hover:bg-accent/10 rounded-xl transition-all border border-transparent hover:border-accent/20 z-20"
+                                            >
+                                                <Edit2 size={18} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); handleDelete(batch.id); }}
+                                                className="p-2.5 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20 z-20"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
                                     </div>
-                                    <button className="text-accent underline text-xs font-bold hover:text-accent-hover transition-colors">
-                                        Manage Students
-                                    </button>
+
+                                    <div className="relative z-10 space-y-4">
+                                        <div>
+                                            <h4 className="text-xl font-bold text-white mb-1 group-hover:text-accent transition-colors leading-tight">
+                                                {batch.name}
+                                            </h4>
+                                            <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                                                {batch.course}
+                                            </p>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-1">
+                                                <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Schedule</p>
+                                                <div className="flex items-center gap-2 text-white font-medium text-sm">
+                                                    <Clock size={14} className="text-accent" />
+                                                    {batch.startTime}
+                                                </div>
+                                            </div>
+                                            <div className="space-y-1">
+                                                <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Capacity</p>
+                                                <div className="flex items-center gap-2 text-white font-medium text-sm">
+                                                    <Users size={14} className="text-accent" />
+                                                    {batch.capacity} Students
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-2">
+                                            <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-2">Facility Access</p>
+                                            <div className="flex items-center gap-2 text-white font-medium text-sm mb-4">
+                                                <Calendar size={14} className="text-accent" />
+                                                {batch.days}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="relative z-10 flex items-center justify-between mt-4 pt-6 border-t border-white/5">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-xs font-black text-white shadow-inner">
+                                                {trainer?.name.charAt(0) || '?'}
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-none mb-1">Assigned Trainer</p>
+                                                <p className="text-sm font-bold text-slate-300">
+                                                    {trainer?.name || 'Unassigned'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => toggleStatus(batch)}
+                                            className={`p-2 rounded-xl border transition-all ${batch.status === 'Active' ? 'text-red-500 border-red-500/20 hover:bg-red-500/10' : 'text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/10'
+                                                }`}
+                                            title={batch.status === 'Active' ? "Deactivate" : "Activate"}
+                                        >
+                                            {batch.status === 'Active' ? <XCircle size={18} /> : <CheckCircle size={18} />}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </div>
+
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={confirmDelete}
+                title="Decommission Batch"
+                message="Are you sure you want to permanently remove this training batch from the system? This action cannot be undone."
+            />
         </DashboardLayout>
     );
 }
