@@ -36,19 +36,6 @@
       "joinDate": "2023-05-12"
     },
     {
-      "id": "4",
-      "name": "Neha Counselor",
-      "email": "counselor@workzen.com",
-      "password": "counselor123",
-      "role": "COUNSELOR",
-      "mobile": "9345678902",
-      "active": true,
-      "assignedRegion": "North",
-      "experienceYears": "3",
-      "qualification": "MBA",
-      "leadExpertise": "Career Counseling"
-    },
-    {
       "id": "5",
       "name": "Shrikant",
       "email": "shrikant@workzen.com",
