@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { UserPlus, Trash2, Mail, Shield, User, ArrowLeft, Search, Filter, MoreVertical } from "lucide-react";
+import { UserPlus, Trash2, Mail, Shield, User, ArrowLeft, Search, Filter, MoreVertical, Key } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import api from "../../services/api";
@@ -126,13 +126,13 @@ export default function UserManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Member Name</label>
                                     <div className="relative group">
-                                        <User size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-accent transition-colors" />
+                                        <User size={20} className="input-icon group-focus-within:text-accent transition-colors" />
                                         <input
                                             type="text"
                                             placeholder="Enter full name"
                                             value={form.name}
                                             onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all text-white font-medium placeholder:text-slate-700"
+                                            className="input-premium-with-icon focus:border-accent/40 focus:ring-accent/5 placeholder:text-slate-700 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -140,13 +140,13 @@ export default function UserManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Email Endpoint</label>
                                     <div className="relative group">
-                                        <Mail size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-accent transition-colors" />
+                                        <Mail size={20} className="input-icon group-focus-within:text-accent transition-colors" />
                                         <input
                                             type="email"
                                             placeholder="member@workzen.com"
                                             value={form.email}
                                             onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all text-white font-medium placeholder:text-slate-700"
+                                            className="input-premium-with-icon focus:border-accent/40 focus:ring-accent/5 placeholder:text-slate-700 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -154,13 +154,13 @@ export default function UserManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Access Password</label>
                                     <div className="relative group">
-                                        <Key size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-accent transition-colors" />
+                                        <Key size={20} className="input-icon group-focus-within:text-accent transition-colors" />
                                         <input
                                             type="text"
                                             placeholder="Set secure password"
                                             value={form.password}
                                             onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all text-white font-medium placeholder:text-slate-700"
+                                            className="input-premium-with-icon focus:border-accent/40 focus:ring-accent/5 placeholder:text-slate-700 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -168,17 +168,20 @@ export default function UserManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">System Privilege</label>
                                     <div className="relative group">
-                                        <Shield size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-accent transition-colors" />
+                                        <Shield size={20} className="input-icon group-focus-within:text-accent transition-colors" />
                                         <select
                                             value={form.role}
                                             onChange={(e) => setForm({ ...form, role: e.target.value })}
-                                            className="w-full pl-14 pr-12 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all text-white font-medium appearance-none cursor-pointer"
+                                            className="input-premium-with-icon appearance-none cursor-pointer focus:border-accent/40 focus:ring-accent/5 font-medium"
                                         >
                                             <option value="ADMIN" className="bg-slate-900">Administrator</option>
                                             <option value="TRAINER" className="bg-slate-900">Training Faculty</option>
                                             <option value="ANALYST" className="bg-slate-900">Systems Analyst</option>
                                             <option value="COUNSELOR" className="bg-slate-900">Admissions Counselor</option>
                                         </select>
+                                        <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                                            <MoreVertical size={14} className="rotate-90" />
+                                        </div>
                                     </div>
                                 </div>
 
@@ -195,13 +198,13 @@ export default function UserManagement() {
                         {/* Table Controls */}
                         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                             <div className="relative group w-full sm:w-80">
-                                <Search size={18} className="absolute left-5 top-4 text-indigo-200/30 group-focus-within:text-accent transition-colors" />
+                                <Search size={18} className="input-icon group-focus-within:text-accent transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Search directory..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-12 pr-6 py-3.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 transition-all text-sm text-white placeholder:text-slate-700 font-medium"
+                                    className="input-premium-with-icon py-3.5 focus:border-accent/40 transition-all text-sm placeholder:text-slate-700 font-medium shadow-sm"
                                 />
                             </div>
                             <div className="flex gap-3 w-full sm:w-auto">

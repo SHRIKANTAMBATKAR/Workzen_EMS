@@ -188,13 +188,13 @@ export default function AnalystManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Analyst Name</label>
                                     <div className="relative group">
-                                        <User size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                        <User size={20} className="input-icon group-focus-within:text-emerald-400" />
                                         <input
                                             type="text"
                                             placeholder="Enter full name"
                                             value={form.name}
                                             onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-emerald-500/40 focus:ring-emerald-500/5 placeholder:text-slate-600"
                                         />
                                     </div>
                                 </div>
@@ -202,13 +202,13 @@ export default function AnalystManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Email Endpoint</label>
                                     <div className="relative group">
-                                        <Mail size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                        <Mail size={20} className="input-icon group-focus-within:text-emerald-400" />
                                         <input
                                             type="email"
                                             placeholder="analyst@workzen.com"
                                             value={form.email}
                                             onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-emerald-500/40 focus:ring-emerald-500/5 placeholder:text-slate-600"
                                         />
                                     </div>
                                 </div>
@@ -216,13 +216,13 @@ export default function AnalystManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Mobile Number</label>
                                     <div className="relative group">
-                                        <Phone size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                        <Phone size={20} className="input-icon group-focus-within:text-emerald-400" />
                                         <input
                                             type="tel"
                                             placeholder="Enter 10-digit number"
                                             value={form.mobile}
                                             onChange={(e) => setForm({ ...form, mobile: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-emerald-500/40 focus:ring-emerald-500/5 placeholder:text-slate-600"
                                         />
                                     </div>
                                 </div>
@@ -230,13 +230,13 @@ export default function AnalystManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Access Password</label>
                                     <div className="relative group">
-                                        <Key size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                        <Key size={20} className="input-icon group-focus-within:text-emerald-400" />
                                         <input
                                             type="text"
                                             placeholder="Set secure password"
                                             value={form.password}
                                             onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-emerald-500/40 focus:ring-emerald-500/5 placeholder:text-slate-600"
                                         />
                                     </div>
                                 </div>
@@ -245,12 +245,12 @@ export default function AnalystManagement() {
                                     <div className="space-y-3">
                                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Join Date</label>
                                         <div className="relative group">
-                                            <Calendar size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                            <Calendar size={20} className="input-icon group-focus-within:text-emerald-400" />
                                             <input
                                                 type="date"
                                                 value={form.joinDate}
                                                 onChange={(e) => setForm({ ...form, joinDate: e.target.value })}
-                                                className="w-full pl-14 pr-4 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium [color-scheme:dark]"
+                                                className="input-premium-with-icon focus:border-emerald-500/40 focus:ring-emerald-500/5 [color-scheme:dark]"
                                             />
                                         </div>
                                     </div>
@@ -258,13 +258,13 @@ export default function AnalystManagement() {
                                     <div className="space-y-3">
                                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Experience (Years)</label>
                                         <div className="relative group">
-                                            <Briefcase size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                            <Briefcase size={20} className="input-icon group-focus-within:text-emerald-400" />
                                             <input
                                                 type="number"
                                                 placeholder="0"
                                                 value={form.experience_years}
                                                 onChange={(e) => setForm({ ...form, experience_years: e.target.value })}
-                                                className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                                className="input-premium-with-icon focus:border-emerald-500/40 focus:ring-emerald-500/5 placeholder:text-slate-600"
                                             />
                                         </div>
                                     </div>
@@ -273,13 +273,13 @@ export default function AnalystManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Specialization</label>
                                     <div className="relative group">
-                                        <Code size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                        <Code size={20} className="input-icon group-focus-within:text-emerald-400" />
                                         <input
                                             type="text"
                                             placeholder="e.g. Java Full Stack , Python Full Stack"
                                             value={form.specialization}
                                             onChange={(e) => setForm({ ...form, specialization: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-emerald-500/40 focus:ring-emerald-500/5 placeholder:text-slate-600"
                                         />
                                     </div>
                                 </div>
@@ -287,13 +287,13 @@ export default function AnalystManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Qualification</label>
                                     <div className="relative group">
-                                        <GraduationCap size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+                                        <GraduationCap size={20} className="input-icon group-focus-within:text-emerald-400" />
                                         <input
                                             type="text"
                                             placeholder="e.g. MCA, B.E. IT"
                                             value={form.qualification}
                                             onChange={(e) => setForm({ ...form, qualification: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-emerald-500/40 focus:ring-4 focus:ring-emerald-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-emerald-500/40 focus:ring-emerald-500/5 placeholder:text-slate-600"
                                         />
                                     </div>
                                 </div>

@@ -188,13 +188,13 @@ export default function TrainerManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Trainer Name</label>
                                     <div className="relative group">
-                                        <User size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <User size={20} className="input-icon group-focus-within:text-blue-400" />
                                         <input
                                             type="text"
                                             placeholder="Enter full name"
                                             value={form.name}
                                             onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -202,13 +202,13 @@ export default function TrainerManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Email Endpoint</label>
                                     <div className="relative group">
-                                        <Mail size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <Mail size={20} className="input-icon group-focus-within:text-blue-400" />
                                         <input
                                             type="email"
                                             placeholder="trainer@workzen.com"
                                             value={form.email}
                                             onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -216,13 +216,13 @@ export default function TrainerManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Mobile Number</label>
                                     <div className="relative group">
-                                        <Phone size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <Phone size={20} className="input-icon group-focus-within:text-blue-400" />
                                         <input
                                             type="tel"
                                             placeholder="Enter 10-digit number"
                                             value={form.mobile}
                                             onChange={(e) => setForm({ ...form, mobile: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -230,13 +230,13 @@ export default function TrainerManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Access Password</label>
                                     <div className="relative group">
-                                        <Key size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <Key size={20} className="input-icon group-focus-within:text-blue-400" />
                                         <input
                                             type="text"
                                             placeholder="Set secure password"
                                             value={form.password}
                                             onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -245,12 +245,12 @@ export default function TrainerManagement() {
                                     <div className="space-y-3">
                                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Joining Date</label>
                                         <div className="relative group">
-                                            <Calendar size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                            <Calendar size={20} className="input-icon group-focus-within:text-blue-400" />
                                             <input
                                                 type="date"
                                                 value={form.joiningDate}
                                                 onChange={(e) => setForm({ ...form, joiningDate: e.target.value })}
-                                                className="w-full pl-14 pr-4 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/5 transition-all text-white font-medium [color-scheme:dark]"
+                                                className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 [color-scheme:dark]"
                                             />
                                         </div>
                                     </div>
@@ -258,13 +258,13 @@ export default function TrainerManagement() {
                                     <div className="space-y-3">
                                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Experience (Years)</label>
                                         <div className="relative group">
-                                            <Briefcase size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                            <Briefcase size={20} className="input-icon group-focus-within:text-blue-400" />
                                             <input
                                                 type="number"
                                                 placeholder="0"
                                                 value={form.experienceYears}
                                                 onChange={(e) => setForm({ ...form, experienceYears: e.target.value })}
-                                                className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                                className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
                                             />
                                         </div>
                                     </div>
@@ -273,13 +273,13 @@ export default function TrainerManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Primary Skills</label>
                                     <div className="relative group">
-                                        <Code size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <Code size={20} className="input-icon group-focus-within:text-blue-400" />
                                         <input
                                             type="text"
                                             placeholder="e.g. React, Node.js, SQL"
                                             value={form.primarySkills}
                                             onChange={(e) => setForm({ ...form, primarySkills: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -287,13 +287,13 @@ export default function TrainerManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Qualification</label>
                                     <div className="relative group">
-                                        <GraduationCap size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <GraduationCap size={20} className="input-icon group-focus-within:text-blue-400" />
                                         <input
                                             type="text"
                                             placeholder="e.g. MCA, B.Tech"
                                             value={form.qualification}
                                             onChange={(e) => setForm({ ...form, qualification: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -324,13 +324,13 @@ export default function TrainerManagement() {
                     <div className="lg:col-span-8 space-y-8">
                         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                             <div className="relative group w-full sm:w-80">
-                                <Search size={18} className="absolute left-5 top-4 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                <Search size={18} className="input-icon group-focus-within:text-blue-400" />
                                 <input
                                     type="text"
                                     placeholder="Search trainers..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-12 pr-6 py-3.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500/40 transition-all text-sm text-white placeholder:text-slate-600 font-medium shadow-sm"
+                                    className="input-premium-with-icon py-3.5 focus:border-blue-500/40 transition-all text-sm placeholder:text-slate-600 font-medium shadow-sm"
                                 />
                             </div>
                         </div>

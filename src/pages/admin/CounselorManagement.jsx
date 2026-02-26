@@ -188,13 +188,13 @@ export default function CounselorManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Counselor Name</label>
                                     <div className="relative group">
-                                        <User size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                                        <User size={20} className="input-icon group-focus-within:text-purple-400" />
                                         <input
                                             type="text"
                                             placeholder="Enter full name"
                                             value={form.name}
                                             onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-purple-500/40 focus:ring-purple-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -202,13 +202,13 @@ export default function CounselorManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Email Endpoint</label>
                                     <div className="relative group">
-                                        <Mail size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                                        <Mail size={20} className="input-icon group-focus-within:text-purple-400" />
                                         <input
                                             type="email"
                                             placeholder="counselor@workzen.com"
                                             value={form.email}
                                             onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-purple-500/40 focus:ring-purple-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -216,13 +216,13 @@ export default function CounselorManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Mobile Number</label>
                                     <div className="relative group">
-                                        <Phone size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                                        <Phone size={20} className="input-icon group-focus-within:text-purple-400" />
                                         <input
                                             type="tel"
                                             placeholder="Enter 10-digit number"
                                             value={form.mobile}
                                             onChange={(e) => setForm({ ...form, mobile: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-purple-500/40 focus:ring-purple-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -230,13 +230,13 @@ export default function CounselorManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Access Password</label>
                                     <div className="relative group">
-                                        <Key size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                                        <Key size={20} className="input-icon group-focus-within:text-purple-400" />
                                         <input
                                             type="text"
                                             placeholder="Set secure password"
                                             value={form.password}
                                             onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-purple-500/40 focus:ring-purple-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -245,13 +245,13 @@ export default function CounselorManagement() {
                                     <div className="space-y-3">
                                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Assigned Region</label>
                                         <div className="relative group">
-                                            <MapPin size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                                            <MapPin size={20} className="input-icon group-focus-within:text-purple-400" />
                                             <input
                                                 type="text"
                                                 placeholder="e.g. North, West"
                                                 value={form.assignedRegion}
                                                 onChange={(e) => setForm({ ...form, assignedRegion: e.target.value })}
-                                                className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                                className="input-premium-with-icon focus:border-purple-500/40 focus:ring-purple-500/5 placeholder:text-slate-600 font-medium"
                                             />
                                         </div>
                                     </div>
@@ -259,13 +259,13 @@ export default function CounselorManagement() {
                                     <div className="space-y-3">
                                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Experience (Years)</label>
                                         <div className="relative group">
-                                            <Briefcase size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                                            <Briefcase size={20} className="input-icon group-focus-within:text-purple-400" />
                                             <input
                                                 type="number"
                                                 placeholder="0"
                                                 value={form.experienceYears}
                                                 onChange={(e) => setForm({ ...form, experienceYears: e.target.value })}
-                                                className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                                className="input-premium-with-icon focus:border-purple-500/40 focus:ring-purple-500/5 placeholder:text-slate-600 font-medium"
                                             />
                                         </div>
                                     </div>
@@ -274,13 +274,13 @@ export default function CounselorManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Qualification</label>
                                     <div className="relative group">
-                                        <GraduationCap size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                                        <GraduationCap size={20} className="input-icon group-focus-within:text-purple-400" />
                                         <input
                                             type="text"
                                             placeholder="e.g. MBA, M.A. Psychology"
                                             value={form.qualification}
                                             onChange={(e) => setForm({ ...form, qualification: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-purple-500/40 focus:ring-purple-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -288,13 +288,13 @@ export default function CounselorManagement() {
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Lead Expertise</label>
                                     <div className="relative group">
-                                        <Star size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                                        <Star size={20} className="input-icon group-focus-within:text-purple-400" />
                                         <input
                                             type="text"
                                             placeholder="e.g. Career Counseling, Emotional Intelligence"
                                             value={form.leadExpertise}
                                             onChange={(e) => setForm({ ...form, leadExpertise: e.target.value })}
-                                            className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 transition-all text-white font-medium placeholder:text-slate-600"
+                                            className="input-premium-with-icon focus:border-purple-500/40 focus:ring-purple-500/5 placeholder:text-slate-600 font-medium"
                                         />
                                     </div>
                                 </div>
