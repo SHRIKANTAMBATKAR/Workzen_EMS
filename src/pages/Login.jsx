@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../services/authService";
-import { Mail, Lock, LogIn, ArrowRight, ShieldCheck } from "lucide-react";
+import { Mail, Lock, LogIn, ArrowRight, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [form, setForm] = useState({
     email: "",
@@ -132,12 +133,19 @@ export default function Login() {
               <div className="relative group">
                 <Lock size={20} className="absolute left-5 top-4.5 text-slate-500 group-focus-within:text-accent transition-colors" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  className="w-full pl-14 pr-6 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all font-bold text-white placeholder:text-slate-700"
+                  className="w-full pl-14 pr-14 py-4.5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all font-bold text-white placeholder:text-slate-700"
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-5 top-4.5 text-slate-500 hover:text-white transition-colors focus:outline-none"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
 

@@ -4,8 +4,7 @@ import { UserPlus, Trash2, Mail, Shield, User, ArrowLeft, Search, Filter, Edit2,
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import DeleteConfirmationModal from "../../components/common/DeleteConfirmationModal";
-
-const BASE_URL = "http://localhost:3001";
+import api from "../../services/api";
 
 export default function AnalystManagement() {
     const navigate = useNavigate();
@@ -34,9 +33,8 @@ export default function AnalystManagement() {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${BASE_URL}/users?role=ANALYST`);
-            const data = await response.json();
-            setUsers(data);
+            const response = await api.get("/users?role=ANALYST");
+            setUsers(response.data);
         } catch (error) {
             toast.error("Failed to load analyst directory");
         } finally {
@@ -53,13 +51,9 @@ export default function AnalystManagement() {
 
         try {
             if (editingUser) {
-                const response = await fetch(`${BASE_URL}/users/${editingUser.id}`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(form),
-                });
+                const response = await api.patch(`/users/${editingUser.id}`, form);
 
-                if (response.ok) {
+                if (response.status === 200) {
                     toast.success("Analyst profile updated successfully");
                     setEditingUser(null);
                     setForm({
@@ -84,13 +78,9 @@ export default function AnalystManagement() {
                     active: true
                 };
 
-                const response = await fetch(`${BASE_URL}/users`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(newUser),
-                });
+                const response = await api.post("/users", newUser);
 
-                if (response.ok) {
+                if (response.status === 201) {
                     toast.success("Analyst account initialized");
                     setForm({
                         name: "",
@@ -121,11 +111,9 @@ export default function AnalystManagement() {
     const confirmDelete = async () => {
         if (!userToDelete) return;
         try {
-            const response = await fetch(`${BASE_URL}/users/${userToDelete}`, {
-                method: "DELETE",
-            });
+            const response = await api.delete(`/users/${userToDelete}`);
 
-            if (response.ok) {
+            if (response.status === 200) {
                 toast.success("Analyst removed from system");
                 fetchUsers();
                 setIsDeleteModalOpen(false);

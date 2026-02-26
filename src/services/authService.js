@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3001";
+import api from "./api";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -6,10 +6,8 @@ export const loginUser = async ({ email, password, role }) => {
   await delay(500);
 
   try {
-    const response = await fetch(`${BASE_URL}/users`);
-    if (!response.ok) throw new Error("Failed to connect to authentication server");
-
-    const users = await response.json();
+    const response = await api.get("/users");
+    const users = response.data;
 
     const user = users.find(
       (u) =>

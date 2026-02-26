@@ -4,8 +4,7 @@ import { User, ArrowLeft, Search, Shield, Mail, Trash2, Phone, Key, Eye, X, Brie
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import DeleteConfirmationModal from "../../components/common/DeleteConfirmationModal";
-
-const BASE_URL = "http://localhost:3001";
+import api from "../../services/api";
 
 export default function AllUsersList() {
     const navigate = useNavigate();
@@ -24,9 +23,8 @@ export default function AllUsersList() {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${BASE_URL}/users`);
-            const data = await response.json();
-            setUsers(data);
+            const response = await api.get("/users");
+            setUsers(response.data);
         } catch (error) {
             toast.error("Failed to load user directory");
         } finally {
@@ -42,11 +40,9 @@ export default function AllUsersList() {
     const confirmDelete = async () => {
         if (!userToDelete) return;
         try {
-            const response = await fetch(`${BASE_URL}/users/${userToDelete}`, {
-                method: "DELETE",
-            });
+            const response = await api.delete(`/users/${userToDelete}`);
 
-            if (response.ok) {
+            if (response.status === 200) {
                 toast.success("User removed from system");
                 fetchUsers();
                 setIsDeleteModalOpen(false);

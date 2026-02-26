@@ -3,8 +3,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import { UserPlus, Trash2, Mail, Shield, User, ArrowLeft, Search, Filter, MoreVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-
-const BASE_URL = "http://localhost:3001";
+import api from "../../services/api";
 
 export default function UserManagement() {
     const navigate = useNavigate();
@@ -25,9 +24,8 @@ export default function UserManagement() {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${BASE_URL}/users`);
-            const data = await response.json();
-            setUsers(data);
+            const response = await api.get("/users");
+            setUsers(response.data);
         } catch (error) {
             toast.error("Failed to load staff directory");
         } finally {
@@ -49,13 +47,9 @@ export default function UserManagement() {
         };
 
         try {
-            const response = await fetch(`${BASE_URL}/users`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newUser),
-            });
+            const response = await api.post("/users", newUser);
 
-            if (response.ok) {
+            if (response.status === 201) {
                 toast.success("Staff profile initialized in database");
                 setForm({ name: "", email: "", role: "TRAINER", password: "" });
                 fetchUsers();
@@ -69,11 +63,9 @@ export default function UserManagement() {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`${BASE_URL}/users/${id}`, {
-                method: "DELETE",
-            });
+            const response = await api.delete(`/users/${id}`);
 
-            if (response.ok) {
+            if (response.status === 200) {
                 toast.success("Staff profile purged from database");
                 fetchUsers();
             } else {

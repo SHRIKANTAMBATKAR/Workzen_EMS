@@ -4,8 +4,7 @@ import { UserPlus, Trash2, Mail, Shield, User, ArrowLeft, Search, Filter, Edit2,
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import DeleteConfirmationModal from "../../components/common/DeleteConfirmationModal";
-
-const BASE_URL = "http://localhost:3001";
+import api from "../../services/api";
 
 export default function CounselorManagement() {
     const navigate = useNavigate();
@@ -34,9 +33,8 @@ export default function CounselorManagement() {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${BASE_URL}/users?role=COUNSELOR`);
-            const data = await response.json();
-            setUsers(data);
+            const response = await api.get("/users?role=COUNSELOR");
+            setUsers(response.data);
         } catch (error) {
             toast.error("Failed to load counselor directory");
         } finally {
@@ -53,13 +51,9 @@ export default function CounselorManagement() {
 
         try {
             if (editingUser) {
-                const response = await fetch(`${BASE_URL}/users/${editingUser.id}`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(form),
-                });
+                const response = await api.patch(`/users/${editingUser.id}`, form);
 
-                if (response.ok) {
+                if (response.status === 200) {
                     toast.success("Counselor profile updated successfully");
                     setEditingUser(null);
                     setForm({
@@ -84,13 +78,9 @@ export default function CounselorManagement() {
                     active: true
                 };
 
-                const response = await fetch(`${BASE_URL}/users`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(newUser),
-                });
+                const response = await api.post("/users", newUser);
 
-                if (response.ok) {
+                if (response.status === 201) {
                     toast.success("Counselor account initialized");
                     setForm({
                         name: "",
@@ -121,11 +111,9 @@ export default function CounselorManagement() {
     const confirmDelete = async () => {
         if (!userToDelete) return;
         try {
-            const response = await fetch(`${BASE_URL}/users/${userToDelete}`, {
-                method: "DELETE",
-            });
+            const response = await api.delete(`/users/${userToDelete}`);
 
-            if (response.ok) {
+            if (response.status === 200) {
                 toast.success("Counselor removed from system");
                 fetchUsers();
                 setIsDeleteModalOpen(false);

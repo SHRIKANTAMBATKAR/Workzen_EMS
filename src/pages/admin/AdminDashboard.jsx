@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import { Users, BookOpen, GraduationCap, Briefcase, PlusCircle, FileText, ArrowUpRight, Shield, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -13,9 +14,9 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-    fetch("http://localhost:3001/users")
-      .then(res => res.json())
-      .then(data => {
+    api.get("/users")
+      .then(res => {
+        const data = res.data;
         const counts = data.reduce((acc, user) => {
           if (user.role === "TRAINER") acc.trainers++;
           if (user.role === "ANALYST") acc.analysts++;
