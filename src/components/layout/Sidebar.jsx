@@ -31,7 +31,6 @@ export default function Sidebar({ role, onLogout }) {
         ANALYST: [
             { name: "Dashboard", path: "/analyst", icon: LayoutDashboard },
             { name: "Batches", path: "/analyst/batches", icon: BookOpen },
-            { name: "Assignments", path: "/analyst/assignments", icon: Users },
         ],
         COUNSELOR: [
             { name: "Dashboard", path: "/counselor", icon: LayoutDashboard },
