@@ -183,8 +183,8 @@ export default function StudentManagement() {
                                             <div className="space-y-2">
                                                 <p className="text-sm font-bold text-slate-700">{s.course}</p>
                                                 <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${s.status === "Enrolled" ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
-                                                        s.status === "Lead" ? "bg-blue-50 text-blue-600 border-blue-100" :
-                                                            "bg-orange-50 text-orange-600 border-orange-100"
+                                                    s.status === "Lead" ? "bg-blue-50 text-blue-600 border-blue-100" :
+                                                        "bg-orange-50 text-orange-600 border-orange-100"
                                                     }`}>
                                                     {s.status}
                                                 </span>

@@ -9,6 +9,7 @@ import CounselorManagement from "../pages/admin/CounselorManagement";
 import AllUsersList from "../pages/admin/AllUsersList";
 import AnalystDashboard from "../pages/analyst/AnalystDashboard";
 import BatchManagement from "../pages/analyst/BatchManagement";
+import AssignStudents from "../pages/analyst/AssignStudents";
 import CounselorDashboard from "../pages/counselor/CounselorDashboard";
 import StudentManagement from "../pages/counselor/StudentManagement";
 import TrainerDashboard from "../pages/trainer/TrainerDashboard";
@@ -32,6 +33,7 @@ export default function AppRoutes() {
         {/* Analyst */}
         <Route path="/analyst" element={<AnalystDashboard />} />
         <Route path="/analyst/batches" element={<BatchManagement />} />
+        <Route path="/analyst/assignments" element={<AssignStudents />} />
 
         {/* Counselor */}
         <Route path="/counselor" element={<CounselorDashboard />} />

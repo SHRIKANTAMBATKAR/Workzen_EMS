@@ -13,6 +13,7 @@ export default function AdminDashboard() {
     total: 0
   });
 
+
   useEffect(() => {
     api.get("/users")
       .then(res => {
