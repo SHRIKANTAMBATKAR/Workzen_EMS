@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { BookOpen, Users, Clock, CheckCircle, PlayCircle, TrendingUp, Calendar, Loader2 } from "lucide-react";
+import { BookOpen, Users, Clock, CheckCircle, PlayCircle, TrendingUp, Calendar, Loader2, AlertTriangle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { toast } from "react-hot-toast";
@@ -41,6 +41,14 @@ export default function TrainerDashboard() {
 
     const totalStudents = students.filter(s => batches.some(b => b.id === s.batchId)).length;
     const activeBatches = batches.filter(b => b.status === "Active");
+    const highPerformers = students.filter(s => batches.some(b => b.id === s.batchId) && s.performance === "high");
+    const atRiskStudents = students.filter(s => batches.some(b => b.id === s.batchId) && s.performance === "low");
+
+    const getLatestProgress = (batchId) => {
+        const batchLogs = logs.filter(l => l.batchId === batchId);
+        if (batchLogs.length === 0) return 0;
+        return batchLogs[0].progress || 0; // Logs are sorted by date desc
+    };
 
     return (
         <DashboardLayout allowedRoles={["TRAINER"]}>
@@ -52,16 +60,16 @@ export default function TrainerDashboard() {
                     </div>
                     <div className="flex gap-3">
                         <button
-                            onClick={() => navigate("/trainer/logs")}
+                            onClick={() => navigate("/trainer/performance")}
                             className="px-6 py-3 bg-white border border-slate-200 rounded-xl text-slate-700 font-bold text-sm hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm"
                         >
-                            <Calendar size={18} className="text-indigo-600" />
-                            Session History
+                            <TrendingUp size={18} className="text-indigo-600" />
+                            Analytics Hub
                         </button>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-left">
                     <div className="bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-2xl p-6 text-white border-none shadow-xl shadow-indigo-200 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                         <div className="flex justify-between items-start mb-6 relative z-10">
@@ -75,6 +83,7 @@ export default function TrainerDashboard() {
                             {activeBatches.length > 0 ? `${activeBatches[0].name} • ${activeBatches[0].startTime}` : "No Active Sessions"}
                         </p>
                         <button
+                            onClick={() => activeBatches.length > 0 && navigate(`/trainer/attendance/${activeBatches[0].id}`)}
                             disabled={activeBatches.length === 0}
                             className="w-full py-3 bg-white text-indigo-700 rounded-xl font-black uppercase tracking-widest text-xs hover:scale-[1.02] active:scale-95 transition-all shadow-lg relative z-10 disabled:opacity-50 disabled:scale-100"
                         >
@@ -82,7 +91,7 @@ export default function TrainerDashboard() {
                         </button>
                     </div>
 
-                    <div className="bg-white rounded-2xl p-6 border-b-4 border-b-emerald-500 text-left group border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="bg-white rounded-2xl p-6 border group border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl">
                                 <CheckCircle size={24} />
@@ -90,15 +99,27 @@ export default function TrainerDashboard() {
                             <div>
                                 <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mb-1">Batch Yield</p>
                                 <h3 className="text-3xl font-black text-slate-800">{loading ? "..." : batches.length}</h3>
-                                <div className="flex items-center gap-1 mt-1 text-emerald-600 text-xs font-bold">
-                                    <TrendingUp size={14} />
-                                    <span>Assigned Nodes</span>
+                                <div className="flex items-center gap-1 mt-1 text-emerald-600 text-[10px] font-bold uppercase tracking-tighter">
+                                    Assigned Nodes
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl p-6 border-b-4 border-b-indigo-500 text-left group border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="bg-white rounded-2xl p-6 border group border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-amber-100 text-amber-600 rounded-xl font-black">
+                                <AlertTriangle size={24} />
+                            </div>
+                            <div>
+                                <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mb-1">At-Risk Alerts</p>
+                                <h3 className="text-3xl font-black text-amber-600">{loading ? "..." : atRiskStudents.length}</h3>
+                                <p className="text-[10px] text-slate-400 mt-1 font-bold uppercase">Needs Attention</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-6 border group border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-indigo-100 text-indigo-600 rounded-xl">
                                 <Users size={24} />
@@ -133,34 +154,52 @@ export default function TrainerDashboard() {
                                 </div>
                             ) : batches.map((batch) => {
                                 const batchStudents = students.filter(s => s.batchId === batch.id).length;
+                                const progress = getLatestProgress(batch.id);
                                 return (
-                                    <div key={batch.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors group relative">
+                                    <div key={batch.id} className="p-6 flex flex-col hover:bg-slate-50 transition-colors group relative">
                                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center font-black border border-indigo-200 group-hover:scale-110 transition-transform">
-                                                <BookOpen size={20} />
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <p className="font-bold text-slate-800">{batch.name}</p>
-                                                    <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-tighter border ${batch.status === 'Active' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>
-                                                        {batch.status}
-                                                    </span>
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center font-black border border-indigo-200 group-hover:scale-110 transition-transform">
+                                                    <BookOpen size={20} />
                                                 </div>
-                                                <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">{batch.course} • {batch.startTime}</p>
+                                                <div>
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="font-bold text-slate-800">{batch.name}</p>
+                                                        <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-tighter border ${batch.status === 'Active' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>
+                                                            {batch.status}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">{batch.course} • {batch.startTime}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => navigate(`/trainer/attendance/${batch.id}`)}
+                                                    className="px-3 py-1.5 bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase tracking-widest rounded-lg hover:bg-indigo-600 hover:text-white transition-all shadow-sm border border-indigo-100"
+                                                >
+                                                    Attendance
+                                                </button>
+                                                <button
+                                                    onClick={() => navigate(`/trainer/logs`)}
+                                                    className="px-3 py-1.5 bg-slate-50 text-slate-600 text-[9px] font-black uppercase tracking-widest rounded-lg hover:bg-slate-800 hover:text-white transition-all shadow-sm border border-slate-200"
+                                                >
+                                                    New Log
+                                                </button>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-3">
-                                            <div className="text-right mr-4 hidden md:block">
-                                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Students</p>
-                                                <p className="text-xs font-bold text-slate-600">{batchStudents} Enrolled</p>
+
+                                        <div className="space-y-1.5 px-1">
+                                            <div className="flex justify-between text-[8px] font-black uppercase tracking-widest text-slate-400">
+                                                <span>Instructional Progress</span>
+                                                <span className="text-indigo-600">{progress}%</span>
                                             </div>
-                                            <button
-                                                onClick={() => navigate(`/trainer/attendance/${batch.id}`)}
-                                                className="px-4 py-2 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm border border-indigo-100"
-                                            >
-                                                Attendance
-                                            </button>
+                                            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-indigo-600 rounded-full transition-all duration-700"
+                                                    style={{ width: `${progress}%` }}
+                                                ></div>
+                                            </div>
                                         </div>
                                     </div>
                                 );
@@ -168,7 +207,7 @@ export default function TrainerDashboard() {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-md">
+                    <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-md flex flex-col">
                         <div className="flex justify-between items-center mb-8">
                             <h3 className="text-xl font-bold text-slate-800 italic">Session Intelligence</h3>
                             <button
@@ -178,7 +217,7 @@ export default function TrainerDashboard() {
                                 Historical Data
                             </button>
                         </div>
-                        <div className="space-y-6 mb-8 relative">
+                        <div className="space-y-6 mb-8 relative flex-1">
                             {logs.length === 0 ? (
                                 <div className="py-12 text-center text-slate-400 italic font-medium">
                                     <Clock size={48} className="mx-auto mb-4 opacity-10" />
