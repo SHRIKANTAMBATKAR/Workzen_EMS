@@ -1,73 +1,132 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { UserPlus, Search, GraduationCap, Mail, Phone, MapPin, Trash2, Filter, MoreVertical } from "lucide-react";
+import { UserPlus, Search, GraduationCap, Mail, Phone, Trash2, Filter, MoreVertical, Calendar, UserCheck, Loader2, CheckCircle, Tag } from "lucide-react";
 import { toast } from "react-hot-toast";
+import api from "../../services/api";
 
 export default function StudentManagement() {
     const [students, setStudents] = useState([]);
+    const [batches, setBatches] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
     const [showAdd, setShowAdd] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
     const [form, setForm] = useState({
         name: "",
         email: "",
         phone: "",
         course: "Fullstack React",
         status: "Lead",
+        enrolmentDate: new Date().toISOString().split('T')[0],
+        batchId: null
     });
 
     useEffect(() => {
-        const stored = JSON.parse(localStorage.getItem("students")) || [
-            { id: 1, name: "Alice Thompson", email: "alice@example.com", phone: "+91 9876543210", course: "Data Science", status: "Enrolled" },
-            { id: 2, name: "Bob Wilson", email: "bob@example.com", phone: "+91 8888877777", course: "Cybersecurity", status: "Lead" },
-        ];
-        setStudents(stored);
+        fetchData();
     }, []);
 
-    const handleAddStudent = (e) => {
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const [studentRes, batchRes] = await Promise.all([
+                api.get("/students"),
+                api.get("/batches")
+            ]);
+            setStudents(studentRes.data);
+            setBatches(batchRes.data);
+        } catch (error) {
+            toast.error("Failed to fetch data from server");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleAddStudent = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.email || !form.phone) {
-            toast.error("Please fill all contact details");
+        if (!form.name || !form.email || !form.phone || !form.enrolmentDate) {
+            toast.error("Please fill all required fields");
             return;
         }
 
-        const newStudent = { id: Date.now(), ...form };
-        const updated = [...students, newStudent];
-        setStudents(updated);
-        localStorage.setItem("students", JSON.stringify(updated));
-        setForm({ name: "", email: "", phone: "", course: "Fullstack React", status: "Lead" });
-        setShowAdd(false);
-        toast.success("Student registered successfully");
+        setSubmitting(true);
+        try {
+            const response = await api.post("/students", {
+                ...form,
+                id: String(Date.now())
+            });
+            if (response.status === 201) {
+                toast.success("Student registered successfully");
+                setForm({
+                    name: "",
+                    email: "",
+                    phone: "",
+                    course: "Fullstack React",
+                    status: "Lead",
+                    enrolmentDate: new Date().toISOString().split('T')[0],
+                    batchId: null
+                });
+                setShowAdd(false);
+                fetchData();
+            }
+        } catch (error) {
+            toast.error("Registration failed");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
-    const deleteStudent = (id) => {
-        const updated = students.filter(s => s.id !== id);
-        setStudents(updated);
-        localStorage.setItem("students", JSON.stringify(updated));
-        toast.success("Student profile removed");
+    const deleteStudent = async (id) => {
+        try {
+            await api.delete(`/students/${id}`);
+            toast.success("Student profile removed");
+            fetchData();
+        } catch (error) {
+            toast.error("Deletion failed");
+        }
     };
+
+    const handleAssignBatch = async (studentId, batchId) => {
+        try {
+            await api.patch(`/students/${studentId}`, { batchId });
+            toast.success("Batch assigned successfully");
+            fetchData();
+        } catch (error) {
+            toast.error("Batch assignment failed");
+        }
+    };
+
+    const filteredStudents = students.filter(s =>
+        s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.phone.includes(searchQuery)
+    );
 
     return (
         <DashboardLayout allowedRoles={["COUNSELOR"]}>
             <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                 <div className="flex justify-between items-center text-left">
                     <div>
-                        <h2 className="text-3xl font-bold tracking-tight">Student Directory</h2>
-                        <p className="text-slate-500 mt-1">Manage student profiles and enrollment status.</p>
+                        <h2 className="text-3xl font-bold tracking-tight text-white italic">Student Directory</h2>
+                        <p className="text-slate-400 mt-1 font-medium italic">Manage student profiles, enrolment, and batch assignments.</p>
                     </div>
                     <button
                         onClick={() => setShowAdd(!showAdd)}
                         className="btn-premium-primary flex items-center gap-2"
                     >
-                        <UserPlus size={18} />
+                        {showAdd ? <CheckCircle size={18} /> : <UserPlus size={18} />}
                         {showAdd ? "Close Form" : "New Registration"}
                     </button>
                 </div>
 
                 {showAdd && (
-                    <div className="glass-card p-8 animate-in zoom-in-95 duration-300">
-                        <h3 className="text-xl font-bold mb-6">Register New Student</h3>
+                    <div className="glass-card p-8 animate-in zoom-in-95 duration-300 text-left">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-1.5 h-6 bg-accent rounded-full shadow-[0_0_12px_rgba(var(--accent-rgb),0.5)]"></div>
+                            <h3 className="text-xl font-bold text-white">Register New Student</h3>
+                        </div>
                         <form onSubmit={handleAddStudent} className="grid md:grid-cols-3 gap-6">
                             <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-600">Full Name</label>
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Full Name</label>
                                 <input
                                     type="text"
                                     value={form.name}
@@ -77,7 +136,7 @@ export default function StudentManagement() {
                                 />
                             </div>
                             <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-600">Email Address</label>
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Email Address</label>
                                 <input
                                     type="email"
                                     value={form.email}
@@ -87,7 +146,7 @@ export default function StudentManagement() {
                                 />
                             </div>
                             <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-600">Phone Number</label>
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Phone Number</label>
                                 <input
                                     type="tel"
                                     value={form.phone}
@@ -97,11 +156,11 @@ export default function StudentManagement() {
                                 />
                             </div>
                             <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-600">Inquiry Course</label>
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Inquiry Course</label>
                                 <select
                                     value={form.course}
                                     onChange={e => setForm({ ...form, course: e.target.value })}
-                                    className="input-premium appearance-none cursor-pointer"
+                                    className="input-premium appearance-none cursor-pointer bg-slate-900/50"
                                 >
                                     <option>Fullstack React</option>
                                     <option>Data Science</option>
@@ -110,36 +169,50 @@ export default function StudentManagement() {
                                 </select>
                             </div>
                             <div className="space-y-2 text-left">
-                                <label className="text-sm font-semibold text-slate-600">Initial Status</label>
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Enrolment Date</label>
+                                <input
+                                    type="date"
+                                    value={form.enrolmentDate}
+                                    onChange={e => setForm({ ...form, enrolmentDate: e.target.value })}
+                                    className="input-premium [color-scheme:dark]"
+                                />
+                            </div>
+                            <div className="space-y-2 text-left">
+                                <label className="text-sm font-semibold text-slate-500 uppercase tracking-widest text-[10px] ml-1">Initial Status</label>
                                 <select
                                     value={form.status}
                                     onChange={e => setForm({ ...form, status: e.target.value })}
-                                    className="input-premium appearance-none cursor-pointer"
+                                    className="input-premium appearance-none cursor-pointer bg-slate-900/50"
                                 >
                                     <option>Lead</option>
                                     <option>Pending</option>
                                     <option>Enrolled</option>
                                 </select>
                             </div>
-                            <div className="flex items-end">
-                                <button type="submit" className="btn-premium-primary w-full h-[54px]">Register Student</button>
+                            <div className="md:col-span-3 flex justify-end mt-4">
+                                <button type="submit" disabled={submitting} className="btn-premium-primary px-10 h-[54px] flex items-center gap-2">
+                                    {submitting ? <Loader2 size={18} className="animate-spin" /> : <UserPlus size={18} />}
+                                    Register Student
+                                </button>
                             </div>
                         </form>
                     </div>
                 )}
 
                 <div className="glass-card overflow-hidden">
-                    <div className="p-6 border-b border-slate-100 flex flex-wrap gap-4 justify-between items-center">
+                    <div className="p-6 border-b border-white/5 flex flex-wrap gap-4 justify-between items-center bg-white/[0.02]">
                         <div className="relative w-full md:w-96">
                             <Search size={18} className="absolute left-4 top-3.5 text-slate-400" />
                             <input
                                 type="text"
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
                                 placeholder="Search by name, email or phone..."
-                                className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-accent transition-all"
+                                className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl outline-none focus:border-accent transition-all text-white placeholder:text-slate-600"
                             />
                         </div>
                         <div className="flex gap-3">
-                            <button className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50">
+                            <button className="flex items-center gap-2 px-4 py-2.5 border border-white/10 rounded-xl text-sm font-semibold text-slate-400 hover:bg-white/5 hover:text-white transition-all">
                                 <Filter size={16} /> Filters
                             </button>
                         </div>
@@ -147,70 +220,107 @@ export default function StudentManagement() {
 
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead className="bg-slate-50 border-b border-slate-100 uppercase text-[10px] font-bold tracking-widest text-slate-400">
+                            <thead className="bg-white/[0.02] border-b border-white/5 uppercase text-[10px] font-bold tracking-widest text-slate-500">
                                 <tr>
                                     <th className="px-8 py-5">Student Information</th>
-                                    <th className="px-8 py-5">Contact</th>
-                                    <th className="px-8 py-5">Course / Status</th>
+                                    <th className="px-8 py-5">Contact & Enrolment</th>
+                                    <th className="px-8 py-5">Course / Batch</th>
                                     <th className="px-8 py-5 text-right font-bold">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {students.map((s) => (
-                                    <tr key={s.id} className="hover:bg-slate-50/50 transition-colors group">
+                            <tbody className="divide-y divide-white/5">
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan="4" className="px-8 py-20 text-center">
+                                            <div className="flex flex-col items-center gap-3 text-slate-500">
+                                                <Loader2 size={48} className="animate-spin text-accent" />
+                                                <p className="font-semibold italic">Synchronizing with server...</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : filteredStudents.map((s) => (
+                                    <tr key={s.id} className="hover:bg-white/[0.02] transition-colors group">
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-500 group-hover:bg-accent/10 group-hover:text-accent transition-all">
+                                                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-slate-500 group-hover:bg-accent/10 group-hover:text-accent transition-all border border-white/5">
                                                     <GraduationCap size={24} />
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-slate-800">{s.name}</p>
-                                                    <p className="text-xs text-slate-400 font-medium">ID: ST-2026-{s.id.toString().slice(-4)}</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-6">
-                                            <div className="space-y-1">
-                                                <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
-                                                    <Mail size={14} className="text-slate-400" /> {s.email}
-                                                </div>
-                                                <div className="flex items-center gap-2 text-xs text-slate-400">
-                                                    <Phone size={14} className="text-slate-400" /> {s.phone}
+                                                    <p className="font-bold text-white group-hover:text-accent transition-colors">{s.name}</p>
+                                                    <p className="text-xs text-slate-500 font-medium">ID: ST-{new Date(parseInt(s.id) || Date.now()).getFullYear()}-{s.id.toString().slice(-4)}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="space-y-2">
-                                                <p className="text-sm font-bold text-slate-700">{s.course}</p>
-                                                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${s.status === "Enrolled" ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
-                                                    s.status === "Lead" ? "bg-blue-50 text-blue-600 border-blue-100" :
-                                                        "bg-orange-50 text-orange-600 border-orange-100"
-                                                    }`}>
-                                                    {s.status}
-                                                </span>
+                                                <div className="flex items-center gap-2 text-sm text-slate-400 font-medium">
+                                                    <Mail size={14} className="text-slate-600" /> {s.email}
+                                                </div>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                                                        <Phone size={14} className="text-slate-600" /> {s.phone}
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                                                        <Calendar size={14} className="text-slate-600" /> {s.enrolmentDate || "N/A"}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-6">
+                                            <div className="space-y-3">
+                                                <div>
+                                                    <p className="text-sm font-bold text-slate-300">{s.course}</p>
+                                                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter border ${s.status === "Enrolled" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                                                        s.status === "Lead" ? "bg-blue-500/10 text-blue-400 border-blue-500/20" :
+                                                            "bg-orange-500/10 text-orange-400 border-orange-500/20"
+                                                        }`}>
+                                                        {s.status}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-2 group/batch">
+                                                    <div className="relative flex-1 max-w-[180px]">
+                                                        <UserCheck size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                                                        <select
+                                                            value={s.batchId || ""}
+                                                            onChange={(e) => handleAssignBatch(s.id, e.target.value)}
+                                                            className="w-full pl-8 pr-2 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[11px] font-bold text-slate-400 appearance-none cursor-pointer focus:border-accent outline-none"
+                                                        >
+                                                            <option value="" className="bg-slate-900">Assign Batch</option>
+                                                            {batches.map(b => (
+                                                                <option key={b.id} value={b.id} className="bg-slate-900">{b.name}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                    {s.batchId && (
+                                                        <div className="p-1 px-2 bg-accent/10 border border-accent/20 rounded text-[10px] font-bold text-accent">
+                                                            {batches.find(b => String(b.id) === String(s.batchId))?.name || "Ref: " + s.batchId}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="px-8 py-6 text-right">
                                             <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => deleteStudent(s.id)}
-                                                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                                    className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all border border-transparent hover:border-red-500/20"
+                                                    title="Delete Student"
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>
-                                                <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all">
+                                                <button className="p-2 text-slate-500 hover:text-white hover:bg-white/5 rounded-lg transition-all border border-transparent hover:border-white/10">
                                                     <MoreVertical size={18} />
                                                 </button>
                                             </div>
                                         </td>
                                     </tr>
                                 ))}
-                                {students.length === 0 && (
+                                {!loading && filteredStudents.length === 0 && (
                                     <tr>
                                         <td colSpan="4" className="px-8 py-20 text-center">
-                                            <div className="flex flex-col items-center gap-3 text-slate-300">
-                                                <Users size={48} strokeWidth={1} />
-                                                <p className="font-semibold">No students registered yet.</p>
+                                            <div className="flex flex-col items-center gap-3 text-slate-600">
+                                                <Tag size={48} strokeWidth={1} className="opacity-20" />
+                                                <p className="font-semibold italic">No matching students found.</p>
                                             </div>
                                         </td>
                                     </tr>

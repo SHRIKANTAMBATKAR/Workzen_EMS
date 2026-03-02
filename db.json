@@ -129,7 +129,7 @@
       "days": "Tue, Thu, Sat",
       "capacity": "30",
       "trainerId": "2",
-      "status": "Inactive"
+      "status": "Active"
     }
   ],
   "students": [
@@ -150,6 +150,16 @@
       "course": "Cybersecurity",
       "status": "Lead",
       "batchId": null
+    },
+    {
+      "id": "1772430143535",
+      "name": "Shrikant Sudhakar Ambatkar",
+      "email": "shrikantambatkar8@gmail.com",
+      "phone": "+918668268460",
+      "course": "Data Science",
+      "status": "Enrolled",
+      "enrolmentDate": "2026-02-27",
+      "batchId": "2"
     }
   ]
 }
