@@ -12,6 +12,8 @@ import BatchManagement from "../pages/analyst/BatchManagement";
 import AssignStudents from "../pages/analyst/AssignStudents";
 import CounselorDashboard from "../pages/counselor/CounselorDashboard";
 import StudentManagement from "../pages/counselor/StudentManagement";
+import AssignBatch from "../pages/counselor/AssignBatch";
+import ViewBatches from "../pages/counselor/ViewBatches";
 import TrainerDashboard from "../pages/trainer/TrainerDashboard";
 import Attendance from "../pages/trainer/Attendance";
 
@@ -38,6 +40,8 @@ export default function AppRoutes() {
         {/* Counselor */}
         <Route path="/counselor" element={<CounselorDashboard />} />
         <Route path="/counselor/students" element={<StudentManagement />} />
+        <Route path="/counselor/assign-batch" element={<AssignBatch />} />
+        <Route path="/counselor/batches" element={<ViewBatches />} />
 
         {/* Trainer */}
         <Route path="/trainer" element={<TrainerDashboard />} />

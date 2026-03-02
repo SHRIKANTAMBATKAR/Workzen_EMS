@@ -140,16 +140,8 @@
       "phone": "+91 9876543210",
       "course": "Fullstack React",
       "status": "Enrolled",
-      "batchId": "1"
-    },
-    {
-      "id": "2",
-      "name": "Bob Wilson",
-      "email": "bob@example.com",
-      "phone": "+91 8888877777",
-      "course": "Cybersecurity",
-      "status": "Lead",
-      "batchId": null
+      "batchId": "2",
+      "enrolmentDate": "2026-03-01"
     },
     {
       "id": "1772430143535",
@@ -158,8 +150,18 @@
       "phone": "+918668268460",
       "course": "Data Science",
       "status": "Enrolled",
-      "enrolmentDate": "2026-02-27",
+      "enrolmentDate": "2026-02-21",
       "batchId": "2"
+    },
+    {
+      "id": "1772431605513",
+      "name": "sham sundar",
+      "email": "sham@gmail.com",
+      "phone": "4",
+      "course": "Fullstack React",
+      "status": "Lead",
+      "enrolmentDate": "2026-03-02",
+      "batchId": "1"
     }
   ]
 }

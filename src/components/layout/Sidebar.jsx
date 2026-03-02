@@ -8,7 +8,8 @@ import {
     Settings,
     LogOut,
     Hexagon,
-    ChevronRight
+    ChevronRight,
+    Link2
 } from "lucide-react";
 
 export default function Sidebar({ role, onLogout }) {
@@ -35,7 +36,8 @@ export default function Sidebar({ role, onLogout }) {
         COUNSELOR: [
             { name: "Dashboard", path: "/counselor", icon: LayoutDashboard },
             { name: "Students", path: "/counselor/students", icon: Users },
-            { name: "Admissions", path: "/counselor/admissions", icon: GraduationCap },
+            { name: "Assign Batch", path: "/counselor/assign-batch", icon: Link2 },
+            { name: "View Batches", path: "/counselor/batches", icon: BookOpen },
         ],
     };
 
