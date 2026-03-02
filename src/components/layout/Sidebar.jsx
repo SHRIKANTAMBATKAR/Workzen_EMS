@@ -9,7 +9,8 @@ import {
     LogOut,
     Hexagon,
     ChevronRight,
-    Link2
+    Link2,
+    TrendingUp
 } from "lucide-react";
 
 export default function Sidebar({ role, onLogout }) {
@@ -26,8 +27,9 @@ export default function Sidebar({ role, onLogout }) {
         ],
         TRAINER: [
             { name: "My Batches", path: "/trainer", icon: BookOpen },
-            { name: "Attendance", path: "/trainer/attendance", icon: GraduationCap },
-            { name: "Logs", path: "/trainer/logs", icon: LayoutDashboard },
+            { name: "Attendance", path: "/trainer", icon: GraduationCap },
+            { name: "Session Logs", path: "/trainer/logs", icon: LayoutDashboard },
+            { name: "Performance", path: "/trainer/performance", icon: TrendingUp },
         ],
         ANALYST: [
             { name: "Dashboard", path: "/analyst", icon: LayoutDashboard },

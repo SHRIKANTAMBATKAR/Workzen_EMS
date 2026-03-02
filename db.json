@@ -163,5 +163,7 @@
       "enrolmentDate": "2026-03-02",
       "batchId": "1"
     }
-  ]
+  ],
+  "attendance": [],
+  "sessionLogs": []
 }
