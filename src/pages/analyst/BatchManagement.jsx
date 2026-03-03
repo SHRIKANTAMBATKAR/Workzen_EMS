@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import { Plus, BookOpen, Clock, Calendar, Search, MoreVertical, Trash2, Edit2, Users, CheckCircle, XCircle, Loader2, Type, UserCheck, Activity, GraduationCap } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -6,12 +7,14 @@ import api from "../../services/api";
 import DeleteConfirmationModal from "../../components/common/DeleteConfirmationModal";
 
 export default function BatchManagement() {
+    const location = useLocation();
+    const navigate = useNavigate();
     const [batches, setBatches] = useState([]);
     const [trainers, setTrainers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [showAdd, setShowAdd] = useState(false);
-    const [activeTab, setActiveTab] = useState("directory"); // "directory" or "manage"
+    const [activeTab, setActiveTab] = useState(location.pathname === "/analyst/create-batch" ? "manage" : "directory"); // "directory" or "manage"
     const [editingBatch, setEditingBatch] = useState(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [batchToDelete, setBatchToDelete] = useState(null);
@@ -28,6 +31,15 @@ export default function BatchManagement() {
     useEffect(() => {
         fetchData();
     }, []);
+
+    useEffect(() => {
+        if (location.pathname === "/analyst/create-batch") {
+            setActiveTab("manage");
+            setEditingBatch(null);
+        } else if (location.pathname === "/analyst/batches") {
+            setActiveTab("directory");
+        }
+    }, [location]);
 
     const fetchData = async () => {
         setLoading(true);
@@ -90,7 +102,11 @@ export default function BatchManagement() {
             status: "Active"
         });
         setEditingBatch(null);
-        setActiveTab("directory");
+        if (location.pathname === "/analyst/create-batch") {
+            navigate("/analyst/batches");
+        } else {
+            setActiveTab("directory");
+        }
     };
 
     const handleEdit = (batch) => {

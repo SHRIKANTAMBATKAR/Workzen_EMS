@@ -37,6 +37,7 @@ export default function AppRoutes() {
         {/* Analyst */}
         <Route path="/analyst" element={<AnalystDashboard />} />
         <Route path="/analyst/batches" element={<BatchManagement />} />
+        <Route path="/analyst/create-batch" element={<BatchManagement />} />
         <Route path="/analyst/assignments" element={<AssignStudents />} />
 
         {/* Counselor */}
