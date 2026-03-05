@@ -28,7 +28,7 @@ export const loginUser = async ({ email, password, role }) => {
       token: fakeToken,
       role: user.role,
       name: user.name,
-      userId: user.id,
+      userId: String(user.id),
       email: user.email,
     };
   } catch (error) {

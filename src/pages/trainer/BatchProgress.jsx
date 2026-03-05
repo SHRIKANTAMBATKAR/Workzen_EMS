@@ -1,45 +1,71 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { BookOpen, Clock, Calendar, Plus, Search, Loader2, PlayCircle, BarChart3, AlertCircle, FileText, Upload } from "lucide-react";
-import { toast } from "react-hot-toast";
+import {
+    BookOpen,
+    FileText,
+    Upload,
+    Send,
+    Loader2,
+    Calendar,
+    History,
+    CheckCircle,
+    ChevronRight,
+    Paperclip,
+    Trash2,
+    Search,
+    Filter
+} from "lucide-react";
 import api from "../../services/api";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function BatchProgress() {
-    const [logs, setLogs] = useState([]);
-    const [batches, setBatches] = useState([]);
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const [showAdd, setShowAdd] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    const [batches, setBatches] = useState([]);
+    const [logs, setLogs] = useState([]);
+    const [selectedBatchId, setSelectedBatchId] = useState("");
+    const [uploadingFile, setUploadingFile] = useState(null);
     const user = JSON.parse(localStorage.getItem("currentUser"));
 
-    const [form, setForm] = useState({
+    const [formData, setFormData] = useState({
+        title: "",
         batchId: "",
-        topic: "",
-        duration: "90",
+        description: "",
         date: new Date().toISOString().split('T')[0],
-        remarks: "",
-        progress: "0",
-        documentName: ""
+        fileName: ""
     });
 
     useEffect(() => {
-        fetchData();
+        if (!user || user.role !== "TRAINER") return;
+        fetchInitialData();
     }, []);
 
-    const fetchData = async () => {
+    const fetchInitialData = async () => {
         setLoading(true);
         try {
-            const [logRes, batchRes] = await Promise.all([
-                api.get(`/sessionLogs?trainerId=${user.id}&_sort=date&_order=desc`),
-                api.get(`/batches?trainerId=${user.id}`)
+            const [batchRes, logRes] = await Promise.all([
+                api.get(`/batches`),
+                api.get(`/sessionLogs`)
             ]);
-            setLogs(logRes.data);
-            setBatches(batchRes.data);
-            if (batchRes.data.length > 0) {
-                setForm(prev => ({ ...prev, batchId: batchRes.data[0].id }));
+
+            const trainerId = String(user.userId);
+            const assignedBatches = (batchRes.data || []).filter(b => String(b.trainerId) === trainerId);
+            const trainerLogs = (logRes.data || [])
+                .filter(l => String(l.trainerId) === trainerId)
+                .slice()
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            setBatches(assignedBatches);
+            setLogs(trainerLogs);
+
+            if (batchRes.data?.length > 0) {
+                setFormData(prev => ({ ...prev, batchId: batchRes.data[0].id }));
+                setSelectedBatchId(batchRes.data[0].id);
             }
         } catch (error) {
-            toast.error("Failed to synchronize session logs");
+            toast.error("Failed to sync repository data");
         } finally {
             setLoading(false);
         }
@@ -47,249 +73,284 @@ export default function BatchProgress() {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            setForm({ ...form, documentName: file.name });
-            toast.success(`Attached: ${file.name}`);
+        if (!file) return;
+
+        const allowedTypes = ["application/pdf", "text/plain"];
+        if (!allowedTypes.includes(file.type)) {
+            toast.error("Only PDF or Text files are permitted for archival");
+            return;
         }
+
+        setUploadingFile(file);
+        setFormData(prev => ({ ...prev, fileName: file.name }));
+        toast.success(`Artifact '${file.name}' staged for deployment`);
+    };
+
+    const removeFile = () => {
+        setUploadingFile(null);
+        setFormData(prev => ({ ...prev, fileName: "" }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.batchId) {
+            toast.error("Module selection required");
+            return;
+        }
+
         setSubmitting(true);
         try {
-            const payload = {
-                ...form,
-                trainerId: user.id,
-                timestamp: new Date().toISOString()
+            const logEntry = {
+                ...formData,
+                trainerId: user.userId,
+                id: Date.now().toString(),
+                duration: 120, // Default for now
+                progress: 50,  // Standard yield
+                topic: formData.title // Alignment with historical schema
             };
-            await api.post("/sessionLogs", payload);
-            toast.success("Session intelligence recorded successfully");
-            setForm({ ...form, topic: "", remarks: "", documentName: "" });
-            setShowAdd(false);
-            fetchData();
+
+            await api.post("/sessionLogs", logEntry);
+            toast.success("Intelligence report committed to central repository");
+
+            // Reset form but keep batchId
+            setFormData({
+                title: "",
+                batchId: formData.batchId,
+                description: "",
+                date: new Date().toISOString().split('T')[0],
+                fileName: ""
+            });
+            setUploadingFile(null);
+
+            // Refresh logs
+            const logRes = await api.get(`/sessionLogs`);
+            const trainerId = String(user.userId);
+            const trainerLogs = (logRes.data || [])
+                .filter(l => String(l.trainerId) === trainerId)
+                .slice()
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+            setLogs(trainerLogs);
         } catch (error) {
-            toast.error("Failed to commit session report");
+            toast.error("Log commitment failure: Terminal error");
         } finally {
             setSubmitting(false);
         }
     };
 
+    const filteredLogs = logs.filter(log => selectedBatchId === "all" || String(log.batchId) === String(selectedBatchId));
+
+    if (loading) {
+        return (
+            <DashboardLayout allowedRoles={["TRAINER"]}>
+                <div className="h-[80vh] flex items-center justify-center">
+                    <Loader2 className="animate-spin text-indigo-600" size={48} />
+                </div>
+            </DashboardLayout>
+        );
+    }
+
     return (
         <DashboardLayout allowedRoles={["TRAINER"]}>
-            <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500 bg-gradient-to-br from-slate-50 to-white min-h-screen p-6">
-                <div className="flex justify-between items-center text-left">
+            <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-700 p-6 text-left">
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
-                        <h2 className="text-3xl font-bold tracking-tight text-slate-800 italic uppercase">Batch Progress Hub</h2>
-                        <p className="text-slate-500 mt-1 font-medium italic">Documenting instructional delivery, batch progress, and class resources.</p>
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="w-8 h-1 bg-emerald-600 rounded-full"></span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Curriculum Logistics</span>
+                        </div>
+                        <h2 className="text-4xl font-black text-slate-800 italic tracking-tighter">Batch Progress</h2>
+                        <p className="text-slate-500 mt-2 font-medium italic">Record daily instructional activity and archive class resources.</p>
                     </div>
-                    <button
-                        onClick={() => setShowAdd(!showAdd)}
-                        className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl font-bold text-sm hover:from-indigo-700 hover:to-indigo-800 transition-all flex items-center gap-2 shadow-md hover:shadow-lg"
-                    >
-                        {showAdd ? <AlertCircle size={18} /> : <Plus size={18} />}
-                        {showAdd ? "Terminate Entry" : "Record Progress"}
-                    </button>
                 </div>
 
-                {showAdd && (
-                    <div className="bg-white rounded-2xl p-8 animate-in zoom-in-95 duration-300 text-left border border-slate-200 shadow-xl relative overflow-hidden">
-                        <div className="absolute -right-20 -top-20 w-40 h-40 bg-indigo-50 rounded-full blur-3xl opacity-50"></div>
-                        <div className="flex items-center gap-3 mb-8 relative z-10">
-                            <div className="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
-                            <h3 className="text-xl font-black text-slate-800 italic uppercase tracking-tight">New Progress Report</h3>
-                        </div>
+                <div className="grid lg:grid-cols-3 gap-12">
+                    {/* Log Entry Form */}
+                    <div className="lg:col-span-2 space-y-8">
+                        <form onSubmit={handleSubmit} className="bg-white rounded-[3rem] border border-slate-200 shadow-2xl p-10 space-y-8 relative overflow-hidden">
+                            {/* Decorative Background Blob */}
+                            <div className="absolute -right-20 -top-20 w-40 h-40 bg-indigo-50/50 rounded-full blur-3xl"></div>
 
-                        <form onSubmit={handleSubmit} className="grid md:grid-cols-3 gap-6 relative z-10">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Target Batch</label>
-                                <select
-                                    value={form.batchId}
-                                    onChange={e => setForm({ ...form, batchId: e.target.value })}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all font-bold italic"
+                            <div className="grid md:grid-cols-2 gap-8 relative z-10">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                                        <BookOpen size={12} className="text-indigo-400" /> Target Module
+                                    </label>
+                                    <select
+                                        className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none font-bold text-slate-700 italic appearance-none cursor-pointer"
+                                        value={formData.batchId}
+                                        onChange={(e) => setFormData({ ...formData, batchId: e.target.value })}
+                                        required
+                                    >
+                                        <option value="" disabled>Select active batch...</option>
+                                        {batches.map(b => (
+                                            <option key={b.id} value={b.id}>{b.name} - {b.course}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                                        <Calendar size={12} className="text-emerald-400" /> Temporal Stamp
+                                    </label>
+                                    <input
+                                        type="date"
+                                        className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none font-bold text-slate-700 italic"
+                                        value={formData.date}
+                                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-3 relative z-10">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                                    <FileText size={12} className="text-amber-400" /> Instructional Title
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Brief title of the session topics..."
+                                    className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none font-bold text-slate-700 italic"
+                                    value={formData.title}
+                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     required
+                                />
+                            </div>
+
+                            <div className="space-y-3 relative z-10">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                                    <CheckCircle size={12} className="text-blue-400" /> Instructional Description
+                                </label>
+                                <textarea
+                                    placeholder="Detail the curriculum delivery, student queries, and key takeaways..."
+                                    rows="5"
+                                    className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none font-bold text-slate-700 italic resize-none"
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                    required
+                                ></textarea>
+                            </div>
+
+                            <div className="space-y-4 relative z-10">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                                    <Paperclip size={12} className="text-rose-400" /> Class Notes Artifact
+                                </label>
+                                <div className="flex items-center gap-4">
+                                    {!formData.fileName ? (
+                                        <label className="flex items-center gap-2 px-6 py-4 bg-indigo-50 text-indigo-600 rounded-2xl border border-indigo-100 text-xs font-black uppercase tracking-widest cursor-pointer hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm">
+                                            <Upload size={16} />
+                                            Upload PDF or Text
+                                            <input
+                                                type="file"
+                                                className="hidden"
+                                                accept=".pdf,.txt"
+                                                onChange={handleFileChange}
+                                            />
+                                        </label>
+                                    ) : (
+                                        <div className="flex items-center gap-3 bg-emerald-50 text-emerald-700 px-6 py-4 rounded-2xl border border-emerald-100 flex-1 group">
+                                            <FileText size={18} />
+                                            <span className="text-xs font-bold italic flex-1 truncate">{formData.fileName}</span>
+                                            <button
+                                                type="button"
+                                                onClick={removeFile}
+                                                className="p-2 text-rose-500 hover:bg-rose-100 rounded-xl transition-colors"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    )}
+                                    <p className="text-[10px] text-slate-400 italic">Optional archival resources.</p>
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={submitting}
+                                className="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black uppercase tracking-[0.25em] text-xs hover:bg-indigo-600 hover:shadow-2xl hover:shadow-indigo-200 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3 relative z-10"
+                            >
+                                {submitting ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
+                                Commiting Session Report
+                            </button>
+                        </form>
+                    </div>
+
+                    {/* Sidebar / History List */}
+                    <div className="space-y-8 flex flex-col">
+                        <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden flex-1 flex flex-col">
+                            {/* Decorative Elements */}
+                            <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
+
+                            <div className="flex justify-between items-center mb-8 relative z-10">
+                                <h3 className="text-xl font-black italic flex items-center gap-2">
+                                    <History size={20} className="text-indigo-400" />
+                                    Archival History
+                                </h3>
+                                <select
+                                    className="bg-white/10 border border-white/20 rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-widest outline-none appearance-none cursor-pointer"
+                                    value={selectedBatchId}
+                                    onChange={(e) => setSelectedBatchId(e.target.value)}
                                 >
+                                    <option value="all" className="bg-slate-800">All Nodes</option>
                                     {batches.map(b => (
-                                        <option key={b.id} value={b.id}>{b.name}</option>
+                                        <option key={b.id} value={b.id} className="bg-slate-800">{b.name}</option>
                                     ))}
                                 </select>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Delivery Date</label>
-                                <input
-                                    type="date"
-                                    value={form.date}
-                                    onChange={e => setForm({ ...form, date: e.target.value })}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all font-bold"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Duration (Min)</label>
-                                <input
-                                    type="number"
-                                    value={form.duration}
-                                    onChange={e => setForm({ ...form, duration: e.target.value })}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all font-bold"
-                                    placeholder="90"
-                                    required
-                                />
-                            </div>
-                            <div className="md:col-span-2 space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Instructional Title</label>
-                                <input
-                                    type="text"
-                                    value={form.topic}
-                                    onChange={e => setForm({ ...form, topic: e.target.value })}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all font-bold italic"
-                                    placeholder="e.g. Advanced State Management with Redux"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Syllabus Progress (%)</label>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    value={form.progress}
-                                    onChange={e => setForm({ ...form, progress: e.target.value })}
-                                    className="w-full h-10 accent-indigo-600 cursor-pointer"
-                                />
-                                <div className="text-right text-[10px] font-black text-indigo-600">{form.progress}% Complete</div>
-                            </div>
-                            <div className="md:col-span-2 space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Operational Description</label>
-                                <textarea
-                                    value={form.remarks}
-                                    onChange={e => setForm({ ...form, remarks: e.target.value })}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all font-medium italic h-24 resize-none"
-                                    placeholder="Internal observations, student participation notes, or blockers..."
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Official Documents (Notes)</label>
-                                <div className="relative group/upload h-24">
-                                    <input
-                                        type="file"
-                                        onChange={handleFileChange}
-                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
-                                        accept=".pdf,.doc,.docx,.txt"
-                                    />
-                                    <div className="absolute inset-0 border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center gap-2 bg-slate-50 group-hover/upload:border-indigo-400 group-hover/upload:bg-indigo-50 transition-all">
-                                        <Upload size={20} className="text-slate-400 group-hover/upload:text-indigo-600" />
-                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest group-hover/upload:text-indigo-600">
-                                            {form.documentName || "Upload Node File"}
-                                        </span>
+
+                            <div className="space-y-4 overflow-y-auto max-h-[600px] pr-2 custom-scrollbar-dark relative z-10 flex-1">
+                                {filteredLogs.length === 0 ? (
+                                    <div className="py-20 text-center text-slate-500 italic opacity-50">
+                                        <History size={48} className="mx-auto mb-4" />
+                                        <p className="text-xs uppercase tracking-widest font-black">No archival records detected</p>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="md:col-span-3 flex justify-end gap-3 mt-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowAdd(false)}
-                                    className="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all"
-                                >
-                                    Discard
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={submitting}
-                                    className="px-10 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl font-black uppercase tracking-widest text-xs hover:from-indigo-700 hover:to-indigo-800 transition-all flex items-center gap-2 shadow-md hover:shadow-lg disabled:opacity-50"
-                                >
-                                    {submitting ? <Loader2 size={18} className="animate-spin" /> : <PlayCircle size={18} />}
-                                    Commit Progress
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                )}
-
-                <div className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-lg">
-                    <div className="p-6 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2.5 bg-indigo-100 text-indigo-600 rounded-xl shadow-sm border border-indigo-200">
-                                <BarChart3 size={20} />
-                            </div>
-                            <p className="font-black text-slate-700 uppercase tracking-tighter italic">Progress Repository</p>
-                        </div>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead className="bg-slate-50 border-b border-slate-200 uppercase text-[10px] font-black tracking-widest text-slate-500">
-                                <tr>
-                                    <th className="px-8 py-5 italic">Chronicle</th>
-                                    <th className="px-8 py-5 italic">Batch Node</th>
-                                    <th className="px-8 py-5 italic">Instructional Title</th>
-                                    <th className="px-8 py-5 italic">Resources</th>
-                                    <th className="px-8 py-5 italic">Metrics</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {loading ? (
-                                    <tr>
-                                        <td colSpan="5" className="px-8 py-20 text-center">
-                                            <div className="flex flex-col items-center gap-3 text-slate-400">
-                                                <Loader2 size={48} className="animate-spin text-indigo-600" />
-                                                <p className="font-black uppercase tracking-widest text-xs">Accessing Archives...</p>
+                                ) : filteredLogs.map((log, idx) => (
+                                    <div key={log.id || idx} className="bg-white/5 border border-white/10 rounded-3xl p-6 hover:bg-white/10 transition-all group cursor-default">
+                                        <div className="flex justify-between items-start mb-3">
+                                            <p className="text-[9px] font-black uppercase tracking-widest text-indigo-400">{new Date(log.date).toLocaleDateString()}</p>
+                                            <div className="px-2 py-0.5 bg-indigo-500/20 text-indigo-300 text-[8px] font-black uppercase tracking-tighter rounded-full">
+                                                {batches.find(b => String(b.id) === String(log.batchId))?.name || "Independent"}
                                             </div>
-                                        </td>
-                                    </tr>
-                                ) : logs.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="5" className="px-8 py-20 text-center text-slate-400 italic font-medium">
-                                            <Search size={48} className="mx-auto mb-4 opacity-10" />
-                                            <p>No instructional records found in the repository.</p>
-                                        </td>
-                                    </tr>
-                                ) : logs.map((log) => {
-                                    const batch = batches.find(b => b.id === log.batchId);
-                                    return (
-                                        <tr key={log.id} className="hover:bg-slate-50 transition-colors group">
-                                            <td className="px-8 py-6">
-                                                <div className="flex items-center gap-3">
-                                                    <Calendar size={14} className="text-indigo-400" />
-                                                    <p className="text-sm font-bold text-slate-800 uppercase italic">
-                                                        {new Date(log.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
-                                                    </p>
+                                        </div>
+                                        <h4 className="font-black text-white text-sm leading-snug mb-2 uppercase tracking-tight group-hover:text-indigo-300 transition-colors underline decoration-white/20 underline-offset-4">
+                                            {log?.title || log?.topic || "Untitled Session"}
+                                        </h4>
+                                        <p className="text-[10px] text-slate-400 line-clamp-2 leading-relaxed italic">{log.description}</p>
+
+                                        {(log.fileName || log.documentName) && (
+                                            <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
+                                                <div className="flex items-center gap-2 text-emerald-400">
+                                                    <Paperclip size={10} />
+                                                    <span className="text-[9px] font-black uppercase tracking-widest truncate max-w-[120px]">{log.fileName || log.documentName}</span>
                                                 </div>
-                                                <p className="text-[10px] text-slate-400 font-bold ml-6">{new Date(log.date).getFullYear()}</p>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <p className="text-sm font-bold text-slate-800 italic">{batch?.name || "System Node"}</p>
-                                                <p className="text-[10px] text-indigo-600 font-bold uppercase tracking-widest">{batch?.course || "Internal"}</p>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <p className="text-sm font-bold text-slate-800 mb-1 italic">{log.topic}</p>
-                                                <p className="text-xs text-slate-500 italic max-w-md truncate">{log.remarks}</p>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                {log.documentName ? (
-                                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100 w-fit group/doc hover:bg-indigo-600 hover:text-white transition-all cursor-pointer">
-                                                        <FileText size={14} className="group-hover/doc:scale-110 transition-transform" />
-                                                        <span className="text-[10px] font-black uppercase tracking-widest truncate max-w-[100px]">{log.documentName}</span>
-                                                    </div>
-                                                ) : (
-                                                    <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest italic">No Nodes</span>
-                                                )}
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="text-right">
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Duration</p>
-                                                        <p className="text-xs font-bold text-slate-700">{log.duration}m</p>
-                                                    </div>
-                                                    <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center relative group/progress">
-                                                        <span className="text-[10px] font-black text-indigo-600 italic">{log.progress}%</span>
-                                                        <div className="absolute inset-0 border-r-2 border-indigo-500 rounded-xl opacity-0 group-hover/progress:opacity-100 transition-opacity"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+                                                <button className="text-[8px] font-black uppercase text-indigo-400 hover:text-white transition-colors">Download Artifact</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="mt-8 pt-6 border-t border-white/5 relative z-10">
+                                <button
+                                    onClick={() => navigate("/trainer")}
+                                    className="w-full py-4 bg-white/10 hover:bg-white/20 rounded-2xl text-[10px] font-black uppercase tracking-[0.25em] transition-all flex items-center justify-center gap-2 border border-white/10"
+                                >
+                                    Dashboard Intelligence <ChevronRight size={14} />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Trainer Tip */}
+                        <div className="bg-indigo-50 rounded-[2.5rem] p-8 border border-indigo-100 flex items-start gap-5 italic shadow-sm">
+                            <div className="p-3 bg-white rounded-2xl text-indigo-600 shadow-sm flex-shrink-0">
+                                <Upload size={20} />
+                            </div>
+                            <div>
+                                <h4 className="text-indigo-900 font-black text-xs uppercase tracking-widest mb-2">Protocol Reminder</h4>
+                                <p className="text-indigo-600 text-[11px] font-medium leading-relaxed underline decoration-indigo-200">
+                                    Uploading daily class notes as PDF artifacts ensures transparency for analysts and provides persistent resources for student retrieval.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

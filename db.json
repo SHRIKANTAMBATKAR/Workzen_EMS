@@ -24,7 +24,7 @@
     },
     {
       "id": "3",
-      "name": "Priya Analyst",
+      "name": "Raju Analyst",
       "email": "analyst@workzen.com",
       "password": "analyst123",
       "role": "ANALYST",
@@ -108,12 +108,25 @@
       "experienceYears": "4",
       "qualification": "BBA",
       "active": true
+    },
+    {
+      "id": "1772691088086",
+      "name": "Sham Pathk",
+      "email": "sham@gmail.com",
+      "mobile": "5468156113",
+      "role": "TRAINER",
+      "password": "sham123",
+      "joiningDate": "2026-03-01",
+      "primarySkills": "java ",
+      "experienceYears": "4",
+      "qualification": "m tech",
+      "active": true
     }
   ],
   "batches": [
     {
       "id": "1",
-      "name": "React ",
+      "name": "React R1",
       "course": "Frontend Development",
       "startTime": "09:00",
       "days": "Mon, Wed, Fri",
@@ -122,13 +135,13 @@
       "status": "Active"
     },
     {
-      "id": "2",
-      "name": "Node  N2",
-      "course": "Backend Systems",
-      "startTime": "14:30",
-      "days": "Tue, Thu, Sat",
-      "capacity": "30",
-      "trainerId": "1772085941738",
+      "id": "1772691204524",
+      "name": "JAVA BT-22",
+      "course": "java backend",
+      "startTime": "12:00",
+      "days": "mon ",
+      "capacity": "15",
+      "trainerId": "1772691088086",
       "status": "Active"
     }
   ],
@@ -136,13 +149,35 @@
     {
       "id": "1",
       "name": "Alice Thompson",
-      "email": "alice@example.com",
+      "email": "alice@gmail.com",
       "phone": "+91 9876543210",
       "course": "Fullstack React",
       "status": "Enrolled",
-      "batchId": "2",
+      "batchId": null,
       "enrolmentDate": "2026-03-01",
       "performance": "high"
+    },
+    {
+      "id": "s2",
+      "name": "Bob Smith",
+      "email": "bob@example.com",
+      "phone": "+91 8888888888",
+      "course": "Fullstack React",
+      "status": "Enrolled",
+      "batchId": "1",
+      "enrolmentDate": "2026-03-02",
+      "performance": "medium"
+    },
+    {
+      "id": "s3",
+      "name": "Charlie Davis",
+      "email": "charlie@gmail.com",
+      "phone": "+91 7777777777",
+      "course": "Backend Systems",
+      "status": "Enrolled",
+      "batchId": null,
+      "enrolmentDate": "2026-03-03",
+      "performance": "low"
     },
     {
       "id": "1772430143535",
@@ -152,8 +187,8 @@
       "course": "Data Science",
       "status": "Enrolled",
       "enrolmentDate": "2026-02-21",
-      "batchId": "2",
-      "performance": "average"
+      "batchId": null,
+      "performance": "medium"
     },
     {
       "id": "1772431605513",
@@ -163,7 +198,7 @@
       "course": "Fullstack React",
       "status": "Lead",
       "enrolmentDate": "2026-03-02",
-      "batchId": "2",
+      "batchId": null,
       "performance": "low"
     }
   ],
@@ -172,20 +207,43 @@
     {
       "id": "1",
       "trainerId": "2",
-      "batchId": "2",
+      "batchId": null,
       "date": "2026-03-02T10:00:00Z",
       "topic": "Express.js Middlewares",
       "duration": 120,
-      "progress": 45
+      "progress": 45,
+      "documentName": "middleware_guide.pdf"
     },
     {
       "id": "2",
       "trainerId": "2",
-      "batchId": "2",
+      "batchId": null,
       "date": "2026-03-01T14:30:00Z",
       "topic": "Intro to REST APIs",
       "duration": 90,
       "progress": 30
+    },
+    {
+      "id": "3",
+      "trainerId": "2",
+      "batchId": "1",
+      "date": "2026-03-04T09:00:00Z",
+      "topic": "React Hooks Deep Dive",
+      "duration": 120,
+      "progress": 55,
+      "documentName": "hooks_notes.pdf"
+    },
+    {
+      "id": "1772702693821",
+      "title": "core java",
+      "batchId": "1",
+      "description": "today we are copmlete oops concept",
+      "date": "2026-03-05",
+      "fileName": "Deep Learning.pdf",
+      "trainerId": "1772691088086",
+      "duration": 120,
+      "progress": 50,
+      "topic": "core java"
     }
   ]
 }

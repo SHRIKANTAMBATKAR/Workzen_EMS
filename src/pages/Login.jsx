@@ -305,7 +305,6 @@ export default function Login() {
 
           {/* Footer */}
           <div className="text-center text-[10px] text-slate-400 border-t border-indigo-100/50 pt-6">
-            © 2024 WorkZen EMS. All rights reserved.
           </div>
         </div>
       </div>

@@ -28,10 +28,9 @@ export default function Sidebar({ role, onLogout }) {
             { name: "All User Directory", path: "/admin/all-users", icon: Users, color: "from-rose-500 to-red-500" },
         ],
         TRAINER: [
+            { name: "Dashboard", path: "/trainer", icon: LayoutDashboard, color: "from-indigo-500 to-blue-500" },
             { name: "My Batch", path: "/trainer/my-batches", icon: BookOpen, color: "from-emerald-500 to-teal-500" },
             { name: "Batch Progress", path: "/trainer/batch-progress", icon: TrendingUp, color: "from-blue-500 to-cyan-500" },
-            { name: "Session Logs", path: "/trainer/logs", icon: LayoutDashboard, color: "from-amber-500 to-orange-500" },
-            { name: "Performance", path: "/trainer/performance", icon: TrendingUp, color: "from-rose-500 to-pink-500" },
         ],
         ANALYST: [
             { name: "Dashboard", path: "/analyst", icon: LayoutDashboard, color: "from-indigo-500 to-blue-500" },

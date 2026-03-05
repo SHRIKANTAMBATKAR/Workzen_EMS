@@ -175,7 +175,7 @@ export default function ViewBatches() {
                                         <div className="mb-6 p-3 bg-slate-50 rounded-xl border border-slate-200">
                                             <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1">
                                                 <Calendar size={12} className="text-indigo-400" />
-                                                Operational Spectrum
+                                                Schedule Days
                                             </p>
                                             <p className="text-sm font-bold text-slate-800 flex items-center gap-2">
                                                 <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
@@ -190,7 +190,7 @@ export default function ViewBatches() {
                                             </div>
                                             <div>
                                                 <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">
-                                                    Lead Facilitator
+                                                    Trainer
                                                 </p>
                                                 <p className="text-sm font-bold text-slate-800 italic flex items-center gap-2">
                                                     {trainer?.name || 'To Be Assigned'}

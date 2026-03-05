@@ -245,7 +245,7 @@ export default function AnalystManagement() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Email Endpoint</label>
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Email</label>
                                     <div className="relative group">
                                         <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
                                         <input
@@ -273,7 +273,7 @@ export default function AnalystManagement() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Access Password</label>
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Password</label>
                                     <div className="relative group">
                                         <Key size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
                                         <input

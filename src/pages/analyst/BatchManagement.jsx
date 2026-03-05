@@ -283,7 +283,7 @@ export default function BatchManagement() {
                             <div className="space-y-5">
                                 <div className="flex items-center gap-3 pb-2 border-b border-indigo-200">
                                     <div className="w-1.5 h-6 bg-gradient-to-b from-indigo-600 to-purple-600 rounded-full"></div>
-                                    <h4 className="text-[10px] font-black text-indigo-700 uppercase tracking-wider">Logistics & Faculty</h4>
+                                    <h4 className="text-[10px] font-black text-indigo-700 uppercase tracking-wider">Faculty</h4>
                                 </div>
                                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
                                     <div className="space-y-2">
@@ -363,9 +363,9 @@ export default function BatchManagement() {
                                                 onChange={e => setForm({ ...form, status: e.target.value })}
                                                 className="w-full pl-11 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-800 appearance-none cursor-pointer"
                                             >
-                                                <option value="Active">Operational / Active</option>
-                                                <option value="Inactive">Paused / Inactive</option>
-                                                <option value="Completed">Finalized / Completed</option>
+                                                <option value="Active">Active</option>
+                                                <option value="Inactive">Inactive</option>
+                                                <option value="Completed">Completed</option>
                                             </select>
                                             <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                                         </div>
