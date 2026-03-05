@@ -15,6 +15,8 @@ import StudentManagement from "../pages/counselor/StudentManagement";
 import AssignBatch from "../pages/counselor/AssignBatch";
 import ViewBatches from "../pages/counselor/ViewBatches";
 import TrainerDashboard from "../pages/trainer/TrainerDashboard";
+import MyBatches from "../pages/trainer/MyBatches";
+import BatchProgress from "../pages/trainer/BatchProgress";
 import Attendance from "../pages/trainer/Attendance";
 import ClassLogs from "../pages/trainer/ClassLogs";
 import StudentPerformance from "../pages/trainer/reports";
@@ -48,6 +50,8 @@ export default function AppRoutes() {
 
         {/* Trainer */}
         <Route path="/trainer" element={<TrainerDashboard />} />
+        <Route path="/trainer/my-batches" element={<MyBatches />} />
+        <Route path="/trainer/batch-progress" element={<BatchProgress />} />
         <Route path="/trainer/attendance/:batchId" element={<Attendance />} />
         <Route path="/trainer/logs" element={<ClassLogs />} />
         <Route path="/trainer/performance" element={<StudentPerformance />} />

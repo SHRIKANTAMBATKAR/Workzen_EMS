@@ -1,6 +1,27 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { UserPlus, Trash2, Mail, Shield, User, ArrowLeft, Search, Filter, MoreVertical, Edit2, Phone, Key, Calendar, Code, Briefcase, GraduationCap } from "lucide-react";
+import {
+    UserPlus,
+    Trash2,
+    Mail,
+    Shield,
+    User,
+    ArrowLeft,
+    Search,
+    Filter,
+    MoreVertical,
+    Edit2,
+    Phone,
+    Key,
+    Calendar,
+    Code,
+    Briefcase,
+    GraduationCap,
+    Sparkles,
+    Download,
+    Eye,
+    Star
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import DeleteConfirmationModal from "../../components/common/DeleteConfirmationModal";
@@ -148,169 +169,199 @@ export default function TrainerManagement() {
         (u.mobile && u.mobile.includes(searchTerm))
     );
 
+    // Role-specific styling
+    const trainerStyle = {
+        gradient: "from-blue-600 to-indigo-600",
+        lightGradient: "from-blue-50 to-indigo-100",
+        bg: "bg-blue-100",
+        text: "text-blue-700",
+        border: "border-blue-200",
+        lightBg: "bg-blue-50",
+        icon: "text-blue-600",
+        badge: "bg-blue-500",
+        hover: "hover:bg-blue-50"
+    };
+
     return (
         <DashboardLayout allowedRoles={["ADMIN"]}>
-            <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 min-h-screen p-6">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 text-left">
                     <div>
-                        <h2 className="text-5xl font-extrabold tracking-tight text-white mb-3">Trainer Management</h2>
-                        <p className="text-slate-400 text-xl font-medium text-left">Manage your teaching faculty here.</p>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full mb-4 border border-blue-200">
+                            <Sparkles size={16} className="text-blue-600" />
+                            <span className="text-xs font-black text-blue-700 uppercase tracking-widest">Trainer Management</span>
+                        </div>
+                        <h2 className="text-5xl font-extrabold tracking-tight mb-3">
+                            <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                                Trainer Management
+                            </span>
+                        </h2>
+                        <p className="text-slate-500 text-xl font-medium flex items-center gap-2">
+                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            Manage your teaching faculty here
+                        </p>
                     </div>
-                    <button
-                        onClick={() => navigate("/admin")}
-                        className="group bg-white/5 border border-white/10 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-white/10 transition-all shadow-sm"
-                    >
-                        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-                        Dashboard
-                    </button>
+
+                    <div className="flex gap-4">
+                        <button
+                            onClick={() => navigate("/admin")}
+                            className="group bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-3 hover:shadow-xl hover:shadow-blue-500/30 transition-all"
+                        >
+                            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                            Dashboard
+                        </button>
+                    </div>
                 </div>
 
-                <div className="grid lg:grid-cols-12 gap-10">
+                <div className="grid lg:grid-cols-12 gap-8">
                     {/* Add/Edit Form Section */}
                     <div className="lg:col-span-4 space-y-6">
-                        <div className="glass-card p-10 h-fit lg:sticky lg:top-32 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl"></div>
+                        <div className="bg-white border-2 border-blue-200 rounded-2xl p-8 h-fit lg:sticky lg:top-32 relative overflow-hidden shadow-xl">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-200 to-indigo-200 rounded-full blur-3xl opacity-50"></div>
 
-                            <div className="flex items-center gap-4 mb-10 relative z-10">
-                                <div className="p-4 bg-blue-500/20 text-blue-400 rounded-2xl border border-blue-500/20">
-                                    <UserPlus size={26} />
+                            <div className="flex items-center gap-4 mb-8 relative z-10">
+                                <div className={`p-4 bg-gradient-to-br ${trainerStyle.gradient} rounded-xl text-white shadow-lg`}>
+                                    <UserPlus size={24} />
                                 </div>
                                 <div className="text-left">
-                                    <h3 className="text-2xl font-bold text-white tracking-tight">
+                                    <h3 className="text-2xl font-bold text-slate-800 tracking-tight">
                                         {editingUser ? "Update Trainer" : "Add Trainer"}
                                     </h3>
                                     <p className="text-xs text-slate-500 uppercase font-black tracking-widest mt-1">Faculty Access</p>
                                 </div>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-8 relative z-10 text-left">
-                                <div className="space-y-3">
+                            <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                                <div className="space-y-2">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Trainer Name</label>
                                     <div className="relative group">
-                                        <User size={20} className="input-icon group-focus-within:text-blue-400" />
+                                        <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                         <input
                                             type="text"
                                             placeholder="Enter full name"
                                             value={form.name}
                                             onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
+                                            className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="space-y-3">
+                                <div className="space-y-2">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Email Endpoint</label>
                                     <div className="relative group">
-                                        <Mail size={20} className="input-icon group-focus-within:text-blue-400" />
+                                        <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                         <input
                                             type="email"
                                             placeholder="trainer@workzen.com"
                                             value={form.email}
                                             onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
+                                            className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="space-y-3">
+                                <div className="space-y-2">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Mobile Number</label>
                                     <div className="relative group">
-                                        <Phone size={20} className="input-icon group-focus-within:text-blue-400" />
+                                        <Phone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                         <input
                                             type="tel"
                                             placeholder="Enter 10-digit number"
                                             value={form.mobile}
                                             onChange={(e) => setForm({ ...form, mobile: e.target.value })}
-                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
+                                            className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="space-y-3">
+                                <div className="space-y-2">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Access Password</label>
                                     <div className="relative group">
-                                        <Key size={20} className="input-icon group-focus-within:text-blue-400" />
+                                        <Key size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                         <input
                                             type="text"
                                             placeholder="Set secure password"
                                             value={form.password}
                                             onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
+                                            className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-3">
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-2">
                                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Joining Date</label>
                                         <div className="relative group">
-                                            <Calendar size={20} className="input-icon group-focus-within:text-blue-400" />
+                                            <Calendar size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                             <input
                                                 type="date"
                                                 value={form.joiningDate}
                                                 onChange={(e) => setForm({ ...form, joiningDate: e.target.value })}
-                                                className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 [color-scheme:dark]"
+                                                className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-800"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="space-y-3">
+                                    <div className="space-y-2">
                                         <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Experience (Years)</label>
                                         <div className="relative group">
-                                            <Briefcase size={20} className="input-icon group-focus-within:text-blue-400" />
+                                            <Briefcase size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                             <input
                                                 type="number"
                                                 placeholder="0"
                                                 value={form.experienceYears}
                                                 onChange={(e) => setForm({ ...form, experienceYears: e.target.value })}
-                                                className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
+                                                className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-3">
+                                <div className="space-y-2">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Primary Skills</label>
                                     <div className="relative group">
-                                        <Code size={20} className="input-icon group-focus-within:text-blue-400" />
+                                        <Code size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                         <input
                                             type="text"
                                             placeholder="e.g. React, Node.js, SQL"
                                             value={form.primarySkills}
                                             onChange={(e) => setForm({ ...form, primarySkills: e.target.value })}
-                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
+                                            className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="space-y-3">
+                                <div className="space-y-2">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Qualification</label>
                                     <div className="relative group">
-                                        <GraduationCap size={20} className="input-icon group-focus-within:text-blue-400" />
+                                        <GraduationCap size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                         <input
                                             type="text"
                                             placeholder="e.g. MCA, B.Tech"
                                             value={form.qualification}
                                             onChange={(e) => setForm({ ...form, qualification: e.target.value })}
-                                            className="input-premium-with-icon focus:border-blue-500/40 focus:ring-blue-500/5 placeholder:text-slate-600 font-medium"
+                                            className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="flex gap-4">
-                                    <button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-blue-500/20 transition-all active:scale-95 flex items-center justify-center gap-3">
+                                <div className="flex gap-3 pt-4">
+                                    <button
+                                        type="submit"
+                                        className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-4 rounded-xl font-black text-xs uppercase tracking-wider shadow-lg shadow-blue-500/30 transition-all active:scale-95 flex items-center justify-center gap-2"
+                                    >
                                         {editingUser ? "Update Profile" : "Initialize Account"}
-                                        <UserPlus size={18} />
+                                        <UserPlus size={16} />
                                     </button>
                                     {editingUser && (
                                         <button
                                             type="button"
                                             onClick={() => {
                                                 setEditingUser(null);
-                                                setForm({ name: "", email: "", mobile: "", role: "TRAINER", password: "" });
+                                                setForm({ name: "", email: "", mobile: "", role: "TRAINER", password: "", joiningDate: "", primarySkills: "", experienceYears: "", qualification: "" });
                                             }}
-                                            className="px-6 bg-white/5 text-slate-400 rounded-2xl border border-white/10 font-bold hover:bg-white/10 transition-all"
+                                            className="px-6 bg-white border-2 border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 transition-all"
                                         >
                                             Cancel
                                         </button>
@@ -321,88 +372,114 @@ export default function TrainerManagement() {
                     </div>
 
                     {/* Trainers List Section */}
-                    <div className="lg:col-span-8 space-y-8">
+                    <div className="lg:col-span-8 space-y-6">
                         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                             <div className="relative group w-full sm:w-80">
-                                <Search size={18} className="input-icon group-focus-within:text-blue-400" />
+                                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Search trainers..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="input-premium-with-icon py-3.5 focus:border-blue-500/40 transition-all text-sm placeholder:text-slate-600 font-medium shadow-sm"
+                                    className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-sm text-slate-800 placeholder:text-slate-400 font-medium shadow-sm"
                                 />
+                            </div>
+                            <div className="flex gap-2">
+                                <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all">
+                                    <Filter size={18} />
+                                </button>
+                                <button className="px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-600 font-medium hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center gap-2">
+                                    <Eye size={18} />
+                                    View All
+                                </button>
                             </div>
                         </div>
 
-                        <div className="glass-card overflow-hidden">
+                        <div className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-xl">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="bg-white/[0.02] border-b border-white/5 text-left">
-                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Trainer Info</th>
-                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Expertise & Experience</th>
-                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Credentials</th>
-                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 text-right">Operations</th>
+                                    <tr className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200">
+                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-blue-700">Trainer Info</th>
+                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-blue-700">Expertise & Experience</th>
+                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-blue-700">Credentials</th>
+                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-blue-700 text-right">Operations</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-slate-200">
                                     {loading ? (
-                                        <tr><td colSpan="4" className="px-8 py-10 text-center text-slate-500">Loading faculty data...</td></tr>
+                                        <tr>
+                                            <td colSpan="4" className="px-8 py-16 text-center">
+                                                <div className="flex flex-col items-center gap-3 text-slate-400">
+                                                    <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                                                    <p className="font-medium">Loading faculty data...</p>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     ) : filteredUsers.map((u) => (
-                                        <tr key={u.id} className="hover:bg-white/[0.02] border-b border-white/5 transition-colors group">
-                                            <td className="px-8 py-6">
-                                                <div className="flex items-center gap-5">
-                                                    <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-white group-hover:bg-blue-600 transition-all font-black text-sm border border-white/10">
+                                        <tr key={u.id} className="hover:bg-blue-50/30 transition-colors group border-b border-slate-200">
+                                            <td className="px-8 py-5">
+                                                <div className="flex items-center gap-4">
+                                                    <div className={`w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-700 font-black text-sm border-2 border-white shadow-md group-hover:scale-110 transition-transform`}>
                                                         {u.name.substring(0, 2).toUpperCase()}
                                                     </div>
                                                     <div className="text-left">
-                                                        <p className="font-bold text-lg text-white group-hover:text-blue-400 transition-colors">{u.name}</p>
+                                                        <p className="font-bold text-lg text-slate-800 group-hover:text-blue-600 transition-colors">{u.name}</p>
                                                         <div className="flex flex-col gap-1 mt-1">
-                                                            <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5"><Mail size={12} /> {u.email}</p>
-                                                            <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5"><Phone size={12} /> {u.mobile || 'No Mobile'}</p>
-                                                            <p className="text-[10px] text-blue-500/60 font-black uppercase tracking-widest flex items-center gap-1.5 mt-1"><Calendar size={10} /> Joined: {u.joiningDate || 'N/A'}</p>
+                                                            <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
+                                                                <Mail size={12} className="text-slate-400" /> {u.email}
+                                                            </p>
+                                                            <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
+                                                                <Phone size={12} className="text-slate-400" /> {u.mobile || 'No Mobile'}
+                                                            </p>
+                                                            <p className="text-[10px] text-blue-600 font-black uppercase tracking-wider flex items-center gap-1.5 mt-1">
+                                                                <Calendar size={10} /> Joined: {u.joiningDate || 'N/A'}
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-6">
+                                            <td className="px-8 py-5">
                                                 <div className="space-y-2 text-left">
                                                     <div>
-                                                        <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Primary Skills</p>
-                                                        <p className="text-sm text-white font-medium">{u.primarySkills || 'N/A'}</p>
+                                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Primary Skills</p>
+                                                        <p className="text-sm text-slate-800 font-medium">{u.primarySkills || 'N/A'}</p>
                                                     </div>
                                                     <div className="flex gap-4">
                                                         <div>
-                                                            <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Experience</p>
-                                                            <p className="text-xs text-slate-400">{u.experienceYears ? `${u.experienceYears} Years` : 'N/A'}</p>
+                                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Experience</p>
+                                                            <p className="text-xs text-slate-600">{u.experienceYears ? `${u.experienceYears} Years` : 'N/A'}</p>
                                                         </div>
                                                         <div>
-                                                            <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Qualification</p>
-                                                            <p className="text-xs text-slate-400">{u.qualification || 'N/A'}</p>
+                                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Qualification</p>
+                                                            <p className="text-xs text-slate-600">{u.qualification || 'N/A'}</p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-6">
+                                            <td className="px-8 py-5">
                                                 <div className="space-y-1 text-left">
-                                                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Password</p>
-                                                    <p className="text-sm font-mono text-blue-400 flex items-center gap-2">
-                                                        <Key size={14} className="text-blue-500" />
-                                                        {u.password}
+                                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider">Password</p>
+                                                    <p className="text-sm font-mono text-blue-600 flex items-center gap-2">
+                                                        <Key size={14} className="text-blue-400" />
+                                                        <span className="bg-blue-50 px-2 py-1 rounded-lg border border-blue-200">
+                                                            {u.password}
+                                                        </span>
                                                     </p>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-6 text-right">
+                                            <td className="px-8 py-5 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button
                                                         onClick={() => handleEdit(u)}
-                                                        className="p-3 text-slate-500 hover:text-blue-400 hover:bg-white/5 rounded-xl transition-all"
+                                                        className="p-2.5 text-slate-400 hover:text-blue-600 hover:bg-blue-100 rounded-lg transition-all border border-transparent hover:border-blue-200"
+                                                        title="Edit trainer"
                                                     >
                                                         <Edit2 size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(u.id)}
-                                                        className="p-3 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                                                        className="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-100 rounded-lg transition-all border border-transparent hover:border-rose-200"
+                                                        title="Delete trainer"
                                                     >
                                                         <Trash2 size={18} />
                                                     </button>
@@ -412,6 +489,19 @@ export default function TrainerManagement() {
                                     ))}
                                 </tbody>
                             </table>
+
+                            {/* Table Footer */}
+                            {!loading && filteredUsers.length > 0 && (
+                                <div className="px-8 py-4 bg-blue-50/50 border-t border-blue-200 flex justify-between items-center text-sm">
+                                    <span className="text-slate-600">
+                                        Showing <span className="font-bold text-blue-600">{filteredUsers.length}</span> of <span className="font-bold text-slate-800">{users.length}</span> trainers
+                                    </span>
+                                    <div className="flex gap-2">
+                                        <button className="px-3 py-1 bg-white border border-blue-200 rounded-lg text-xs text-blue-600 hover:bg-blue-50 transition-colors">Previous</button>
+                                        <button className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs hover:bg-blue-700 transition-colors">Next</button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

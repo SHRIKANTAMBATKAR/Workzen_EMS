@@ -18,24 +18,34 @@ export default function TrainerDashboard() {
             navigate("/login");
             return;
         }
+
+        // Initial fetch
         fetchDashboardData();
+
+        // Real-time polling every 30 seconds
+        const pollInterval = setInterval(() => {
+            fetchDashboardData(true); // pass true for silent update
+        }, 30000);
+
+        return () => clearInterval(pollInterval);
     }, []);
 
-    const fetchDashboardData = async () => {
-        setLoading(true);
+    const fetchDashboardData = async (silent = false) => {
+        if (!silent) setLoading(true);
         try {
             const [batchRes, studentRes, logRes] = await Promise.all([
                 api.get(`/batches?trainerId=${user.id}`),
                 api.get("/students"),
                 api.get(`/sessionLogs?trainerId=${user.id}&_limit=5&_sort=date&_order=desc`)
             ]);
-            setBatches(batchRes.data);
-            setStudents(studentRes.data);
-            setLogs(logRes.data);
+            setBatches(batchRes.data || []);
+            setStudents(studentRes.data || []);
+            setLogs(logRes.data || []);
         } catch (error) {
-            toast.error("Failed to sync dashboard intelligence");
+            if (!silent) toast.error("Failed to sync dashboard intelligence");
+            console.error("Dashboard sync error:", error);
         } finally {
-            setLoading(false);
+            if (!silent) setLoading(false);
         }
     };
 
