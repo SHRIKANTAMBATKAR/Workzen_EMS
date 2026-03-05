@@ -12,7 +12,8 @@ import {
     Link2,
     TrendingUp,
     Sparkles,
-    Star
+    Star,
+    FileText
 } from "lucide-react";
 
 export default function Sidebar({ role, onLogout }) {
@@ -31,6 +32,7 @@ export default function Sidebar({ role, onLogout }) {
             { name: "Dashboard", path: "/trainer", icon: LayoutDashboard, color: "from-indigo-500 to-blue-500" },
             { name: "My Batch", path: "/trainer/my-batches", icon: BookOpen, color: "from-emerald-500 to-teal-500" },
             { name: "Batch Progress", path: "/trainer/batch-progress", icon: TrendingUp, color: "from-blue-500 to-cyan-500" },
+            { name: "Manage Records", path: "/trainer/manage-records", icon: FileText, color: "from-amber-500 to-orange-500" },
         ],
         ANALYST: [
             { name: "Dashboard", path: "/analyst", icon: LayoutDashboard, color: "from-indigo-500 to-blue-500" },

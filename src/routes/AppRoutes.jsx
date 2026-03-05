@@ -17,6 +17,7 @@ import ViewBatches from "../pages/counselor/ViewBatches";
 import TrainerDashboard from "../pages/trainer/TrainerDashboard";
 import MyBatches from "../pages/trainer/MyBatches";
 import BatchProgress from "../pages/trainer/BatchProgress";
+import ManageRecords from "../pages/trainer/ManageRecords";
 
 export default function AppRoutes() {
   return (
@@ -49,6 +50,7 @@ export default function AppRoutes() {
         <Route path="/trainer" element={<TrainerDashboard />} />
         <Route path="/trainer/my-batches" element={<MyBatches />} />
         <Route path="/trainer/batch-progress" element={<BatchProgress />} />
+        <Route path="/trainer/manage-records" element={<ManageRecords />} />
       </Routes>
     </BrowserRouter>
   );

@@ -143,6 +143,16 @@
       "capacity": "15",
       "trainerId": "1772691088086",
       "status": "Active"
+    },
+    {
+      "id": "1772703614619",
+      "name": "React BT-11",
+      "course": "React",
+      "startTime": "13:00",
+      "days": "mon tue wed",
+      "capacity": "15",
+      "trainerId": "1772691088086",
+      "status": "Active"
     }
   ],
   "students": [
@@ -234,16 +244,28 @@
       "documentName": "hooks_notes.pdf"
     },
     {
-      "id": "1772702693821",
-      "title": "core java",
-      "batchId": "1",
-      "description": "today we are copmlete oops concept",
-      "date": "2026-03-05",
-      "fileName": "Deep Learning.pdf",
+      "id": "1772703690920",
+      "title": "hooks concept",
+      "batchId": "1772703614619",
+      "description": "start the hooks ",
+      "date": "2026-03-04",
+      "fileName": "Distribute System pyq.pdf",
       "trainerId": "1772691088086",
       "duration": 120,
       "progress": 50,
-      "topic": "core java"
+      "topic": "hooks concept"
+    },
+    {
+      "id": "1772704831330",
+      "title": "collection freamwork",
+      "batchId": "1",
+      "description": "discuss about the collection freamwork",
+      "date": "2026-03-05",
+      "fileName": "ResumeVaibhav.pdf",
+      "trainerId": "1772691088086",
+      "duration": 120,
+      "progress": 50,
+      "topic": "collection freamwork"
     }
   ]
 }
