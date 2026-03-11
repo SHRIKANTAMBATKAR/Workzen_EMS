@@ -41,8 +41,6 @@ WorkZen EMS is a premium, glassmorphic-themed web application designed to stream
    ```bash
    npm install
    ```
-
-
 ### Development
 To start both the frontend and the mock backend server simultaneously:
 ```bash
