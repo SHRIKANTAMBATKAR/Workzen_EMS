@@ -51,9 +51,9 @@ export default function BatchProgress() {
             ]);
 
             const trainerId = String(user.userId);
-            const assignedBatches = (batchRes.data || []).filter(b => String(b.trainerId) === trainerId);
+            const assignedBatches = (batchRes.data || []).filter(b => String(b.trainer?.id || b.trainerId) === trainerId);
             const trainerLogs = (logRes.data || [])
-                .filter(l => String(l.trainerId) === trainerId)
+                .filter(l => String(l.trainer?.id || l.trainerId) === trainerId)
                 .slice()
                 .sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -100,17 +100,24 @@ export default function BatchProgress() {
 
         setSubmitting(true);
         try {
-            const logEntry = {
-                ...formData,
-                trainerId: user.userId,
-                id: Date.now().toString(),
-                duration: 120, // Default for now
-                progress: 50,  // Standard yield
-                topic: formData.title // Alignment with historical schema
-            };
+            const formDataToSend = new FormData();
+            formDataToSend.append("date", formData.date);
+            formDataToSend.append("topicCovered", formData.title);
+            formDataToSend.append("notes", formData.description); // Changed from formData.notes to formData.description
+            formDataToSend.append("completionPercentage", 100); // Changed from parseInt(formData.completion) to 100
+            formDataToSend.append("batchId", formData.batchId);
+            formDataToSend.append("trainerId", user.userId);
 
-            await api.post("/sessionLogs", logEntry);
-            toast.success("Intelligence report committed to central repository");
+            if (uploadingFile) {
+                formDataToSend.append("file", uploadingFile);
+            }
+
+            await api.post("/sessionLogs/upload", formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            toast.success("Instructional record synchronized successfully!");
 
             // Reset form but keep batchId
             setFormData({
@@ -126,7 +133,7 @@ export default function BatchProgress() {
             const logRes = await api.get(`/sessionLogs`);
             const trainerId = String(user.userId);
             const trainerLogs = (logRes.data || [])
-                .filter(l => String(l.trainerId) === trainerId)
+                .filter(l => String(l.trainer?.id || l.trainerId) === trainerId)
                 .slice()
                 .sort((a, b) => new Date(b.date) - new Date(a.date));
             setLogs(trainerLogs);
@@ -137,7 +144,7 @@ export default function BatchProgress() {
         }
     };
 
-    const filteredLogs = logs.filter(log => selectedBatchId === "all" || String(log.batchId) === String(selectedBatchId));
+    const filteredLogs = logs.filter(log => selectedBatchId === "all" || String(log.batch?.id || log.batchId) === String(selectedBatchId));
 
     if (loading) {
         return (
@@ -174,7 +181,7 @@ export default function BatchProgress() {
                             <div className="grid md:grid-cols-2 gap-8 relative z-10">
                                 <div className="space-y-3">
                                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                                        <BookOpen size={12} className="text-indigo-400" /> Target Module
+                                        <BookOpen size={12} className="text-indigo-400" /> Batch Name
                                     </label>
                                     <select
                                         className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none font-bold text-slate-700 italic appearance-none cursor-pointer"
@@ -184,13 +191,13 @@ export default function BatchProgress() {
                                     >
                                         <option value="" disabled>Select active batch...</option>
                                         {batches.map(b => (
-                                            <option key={b.id} value={b.id}>{b.name} - {b.course}</option>
+                                            <option key={b.id} value={b.id}>{b.batchName} - {b.course}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div className="space-y-3">
                                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                                        <Calendar size={12} className="text-emerald-400" /> Temporal Stamp
+                                        <Calendar size={12} className="text-emerald-400" /> Time
                                     </label>
                                     <input
                                         type="date"
@@ -204,7 +211,7 @@ export default function BatchProgress() {
 
                             <div className="space-y-3 relative z-10">
                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                                    <FileText size={12} className="text-amber-400" /> Instructional Title
+                                    <FileText size={12} className="text-amber-400" /> Topic
                                 </label>
                                 <input
                                     type="text"
@@ -218,7 +225,7 @@ export default function BatchProgress() {
 
                             <div className="space-y-3 relative z-10">
                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                                    <CheckCircle size={12} className="text-blue-400" /> Instructional Description
+                                    <CheckCircle size={12} className="text-blue-400" /> Description
                                 </label>
                                 <textarea
                                     placeholder="Detail the curriculum delivery, student queries, and key takeaways..."
@@ -232,7 +239,7 @@ export default function BatchProgress() {
 
                             <div className="space-y-4 relative z-10">
                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                                    <Paperclip size={12} className="text-rose-400" /> Class Notes Artifact
+                                    <Paperclip size={12} className="text-rose-400" /> Class Notes
                                 </label>
                                 <div className="flex items-center gap-4">
                                     {!formData.fileName ? (

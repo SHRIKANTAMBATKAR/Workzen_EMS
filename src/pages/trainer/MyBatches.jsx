@@ -25,7 +25,7 @@ export default function MyBatches() {
         try {
             const res = await api.get(`/batches`);
             const trainerId = String(user.userId);
-            const assignedBatches = (res.data || []).filter(b => String(b.trainerId) === trainerId);
+            const assignedBatches = (res.data || []).filter(b => String(b.trainer?.id || b.trainerId) === trainerId);
             setBatches(assignedBatches);
         } catch (error) {
             toast.error("Failed to recover batch allocation data");
@@ -36,8 +36,8 @@ export default function MyBatches() {
     };
 
     const filteredBatches = batches.filter(batch =>
-        batch.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        batch.course.toLowerCase().includes(searchQuery.toLowerCase())
+        (batch.batchName || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (batch.course || "").toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     if (loading) {
@@ -98,7 +98,7 @@ export default function MyBatches() {
                                 <div className="p-10 space-y-8 flex-1 relative z-10">
                                     <div className="flex justify-between items-start">
                                         <div className="w-20 h-20 bg-slate-900 text-white rounded-[2rem] flex items-center justify-center font-black text-3xl group-hover:bg-indigo-600 group-hover:rotate-6 transition-all shadow-xl shadow-slate-200">
-                                            {batch.name.charAt(0)}
+                                            {(batch.batchName || "?").charAt(0)}
                                         </div>
                                         <span className={`px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${batch.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-500 border-slate-100'
                                             }`}>
@@ -107,7 +107,7 @@ export default function MyBatches() {
                                     </div>
 
                                     <div>
-                                        <h3 className="text-3xl font-black text-slate-800 italic group-hover:text-indigo-600 transition-colors leading-tight">{batch.name}</h3>
+                                        <h3 className="text-3xl font-black text-slate-800 italic group-hover:text-indigo-600 transition-colors leading-tight">{batch.batchName}</h3>
                                         <p className="text-xs font-black uppercase tracking-[0.25em] text-slate-400 mt-2">{batch.course}</p>
                                     </div>
 

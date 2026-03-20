@@ -36,15 +36,6 @@
       "joinDate": "2023-05-12"
     },
     {
-      "id": "5",
-      "name": "Shrikant",
-      "email": "shrikant@workzen.com",
-      "password": "admin123",
-      "role": "ADMIN",
-      "mobile": "9456789013",
-      "active": true
-    },
-    {
       "id": "1771571343876",
       "name": "vaibhav",
       "email": "vaibhav@gmail.com",
@@ -81,32 +72,6 @@
       "qualification": "BA",
       "leadExpertise": "Career Counseling",
       "password": "staff123",
-      "active": true
-    },
-    {
-      "id": "1772085941738",
-      "name": "mohan sham",
-      "email": "mohan@gmail.com",
-      "mobile": "9887897879",
-      "role": "TRAINER",
-      "password": "mohan123",
-      "joiningDate": "2026-02-25",
-      "primarySkills": "react",
-      "experienceYears": "3",
-      "qualification": "BE",
-      "active": true
-    },
-    {
-      "id": "1772428054620",
-      "name": "sai ",
-      "email": "sai@gmai.com",
-      "mobile": "48464565",
-      "role": "TRAINER",
-      "password": "sai123",
-      "joiningDate": "2026-03-16",
-      "primarySkills": "react",
-      "experienceYears": "4",
-      "qualification": "BBA",
       "active": true
     },
     {
@@ -231,7 +196,7 @@
       "date": "2026-03-01T14:30:00Z",
       "topic": "Intro to REST APIs",
       "duration": 90,
-      "progress": 30
+      "progress": 40
     },
     {
       "id": "3",

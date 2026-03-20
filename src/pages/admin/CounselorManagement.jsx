@@ -42,7 +42,6 @@ export default function CounselorManagement() {
         password: "",
         assignedRegion: "",
         experienceYears: "",
-        qualification: "",
         leadExpertise: "",
     });
 
@@ -53,7 +52,7 @@ export default function CounselorManagement() {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await api.get("/users?role=COUNSELOR");
+            const response = await api.get("/admins/counselors");
             setUsers(response.data);
         } catch (error) {
             toast.error("Failed to load counselor directory");
@@ -64,14 +63,14 @@ export default function CounselorManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.email || !form.mobile || !form.password || !form.assignedRegion || !form.experienceYears || !form.qualification || !form.leadExpertise) {
+        if (!form.name || !form.email || !form.mobile || !form.password || !form.assignedRegion || !form.experienceYears || !form.leadExpertise) {
             toast.error("Please fill all required fields");
             return;
         }
 
         try {
             if (editingUser) {
-                const response = await api.patch(`/users/${editingUser.id}`, form);
+                const response = await api.put(`/admins/counselors/${editingUser.id}`, form);
 
                 if (response.status === 200) {
                     toast.success("Counselor profile updated successfully");
@@ -84,7 +83,6 @@ export default function CounselorManagement() {
                         password: "",
                         assignedRegion: "",
                         experienceYears: "",
-                        qualification: "",
                         leadExpertise: "",
                     });
                     fetchUsers();
@@ -92,15 +90,9 @@ export default function CounselorManagement() {
                     throw new Error();
                 }
             } else {
-                const newUser = {
-                    id: String(Date.now()),
-                    ...form,
-                    active: true
-                };
+                const response = await api.post("/admins/counselors", { ...form, active: true });
 
-                const response = await api.post("/users", newUser);
-
-                if (response.status === 201) {
+                if (response.status === 200 || response.status === 201) {
                     toast.success("Counselor account initialized");
                     setForm({
                         name: "",
@@ -110,7 +102,6 @@ export default function CounselorManagement() {
                         password: "",
                         assignedRegion: "",
                         experienceYears: "",
-                        qualification: "",
                         leadExpertise: "",
                     });
                     fetchUsers();
@@ -131,7 +122,7 @@ export default function CounselorManagement() {
     const confirmDelete = async () => {
         if (!userToDelete) return;
         try {
-            const response = await api.delete(`/users/${userToDelete}`);
+            const response = await api.delete(`/admins/counselors/${userToDelete}`);
 
             if (response.status === 200) {
                 toast.success("Counselor removed from system");
@@ -156,7 +147,6 @@ export default function CounselorManagement() {
             password: user.password || "",
             assignedRegion: user.assignedRegion || "",
             experienceYears: user.experienceYears || "",
-            qualification: user.qualification || "",
             leadExpertise: user.leadExpertise || "",
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });

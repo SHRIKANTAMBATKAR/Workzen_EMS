@@ -43,10 +43,10 @@ export default function BatchManagement() {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
     const [form, setForm] = useState({
-        name: "",
+        batchName: "",
         course: "",
-        startTime: "",
-        days: "",
+        startDate: "",
+        endDate: "",
         capacity: "",
         trainerId: "",
         status: "Active"
@@ -83,26 +83,27 @@ export default function BatchManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.course || !form.trainerId || !form.startTime || !form.days || !form.capacity) {
+        if (!form.batchName || !form.course || !form.trainerId || !form.startDate || !form.endDate || !form.capacity) {
             toast.error("Please fill all required fields");
             return;
         }
 
         setSubmitting(true);
         try {
+            const userStr = localStorage.getItem('user');
+            const currentUser = userStr ? JSON.parse(userStr) : {};
+            const analystId = currentUser.userId || 1;
+
             if (editingBatch) {
-                const response = await api.patch(`/batches/${editingBatch.id}`, form);
+                const response = await api.put(`/batches/${editingBatch.id}`, form);
                 if (response.status === 200) {
                     toast.success("Batch configuration updated");
                     resetForm();
                     fetchData();
                 }
             } else {
-                const response = await api.post("/batches", {
-                    ...form,
-                    id: String(Date.now())
-                });
-                if (response.status === 201) {
+                const response = await api.post(`/batches?analystId=${analystId}&trainerId=${form.trainerId}`, form);
+                if (response.status === 200 || response.status === 201) {
                     toast.success("New batch initialized");
                     resetForm();
                     fetchData();
@@ -117,10 +118,10 @@ export default function BatchManagement() {
 
     const resetForm = () => {
         setForm({
-            name: "",
+            batchName: "",
             course: "",
-            startTime: "",
-            days: "",
+            startDate: "",
+            endDate: "",
             capacity: "",
             trainerId: "",
             status: "Active"
@@ -136,12 +137,12 @@ export default function BatchManagement() {
     const handleEdit = (batch) => {
         setEditingBatch(batch);
         setForm({
-            name: batch.name,
+            batchName: batch.batchName,
             course: batch.course,
-            startTime: batch.startTime,
-            days: batch.days,
+            startDate: batch.startDate,
+            endDate: batch.endDate,
             capacity: batch.capacity,
-            trainerId: batch.trainerId,
+            trainerId: batch.trainerId || (batch.trainer ? batch.trainer.id : ""),
             status: batch.status
         });
         setActiveTab("manage");
@@ -173,7 +174,7 @@ export default function BatchManagement() {
     const toggleStatus = async (batch) => {
         const newStatus = batch.status === "Active" ? "Inactive" : "Active";
         try {
-            await api.patch(`/batches/${batch.id}`, { status: newStatus });
+            await api.put(`/batches/${batch.id}`, { ...batch, status: newStatus });
             toast.success(`Batch ${newStatus.toLowerCase()}`);
             fetchData();
         } catch (error) {
@@ -182,8 +183,8 @@ export default function BatchManagement() {
     };
 
     const filteredBatches = batches.filter(batch => {
-        const matchesSearch = batch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            batch.course.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = (batch.batchName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (batch.course || "").toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = filterStatus === "all" || batch.status === filterStatus;
         return matchesSearch && matchesStatus;
     });
@@ -256,8 +257,8 @@ export default function BatchManagement() {
                                             <Type size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
                                             <input
                                                 type="text"
-                                                value={form.name}
-                                                onChange={e => setForm({ ...form, name: e.target.value })}
+                                                value={form.batchName}
+                                                onChange={e => setForm({ ...form, batchName: e.target.value })}
                                                 className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-800 placeholder:text-slate-400"
                                                 placeholder="e.g. FullStack Elite B1"
                                             />
@@ -305,28 +306,27 @@ export default function BatchManagement() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-wider ml-1">Start Time</label>
+                                        <label className="text-xs font-black text-slate-500 uppercase tracking-wider ml-1">Start Date</label>
                                         <div className="relative group">
-                                            <Clock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                                            <Calendar size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
                                             <input
-                                                type="time"
-                                                value={form.startTime}
-                                                onChange={e => setForm({ ...form, startTime: e.target.value })}
+                                                type="date"
+                                                value={form.startDate}
+                                                onChange={e => setForm({ ...form, startDate: e.target.value })}
                                                 className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-800"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-wider ml-1">Operational Days</label>
+                                        <label className="text-xs font-black text-slate-500 uppercase tracking-wider ml-1">End Date</label>
                                         <div className="relative group">
                                             <Calendar size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
                                             <input
-                                                type="text"
-                                                value={form.days}
-                                                onChange={e => setForm({ ...form, days: e.target.value })}
+                                                type="date"
+                                                value={form.endDate}
+                                                onChange={e => setForm({ ...form, endDate: e.target.value })}
                                                 className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-800 placeholder:text-slate-400"
-                                                placeholder="e.g. Mon, Wed, Fri"
                                             />
                                         </div>
                                     </div>
@@ -443,7 +443,8 @@ export default function BatchManagement() {
                                     <p className="font-medium">No batches found matching your criteria</p>
                                 </div>
                             ) : filteredBatches.map((batch) => {
-                                const trainer = trainers.find(t => String(t.id) === String(batch.trainerId));
+                                const trainerId = batch.trainer ? batch.trainer.id : batch.trainerId;
+                                const trainer = trainers.find(t => String(t.id) === String(trainerId));
                                 return (
                                     <div key={batch.id} className="p-6 bg-white hover:bg-slate-50 transition-colors group text-left relative overflow-hidden border-b border-slate-200">
                                         {/* Status-based gradient background */}
@@ -492,7 +493,7 @@ export default function BatchManagement() {
                                             <div className="space-y-3">
                                                 <div>
                                                     <h4 className="text-lg font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">
-                                                        {batch.name}
+                                                        {batch.batchName}
                                                     </h4>
                                                     <p className="text-xs text-slate-500 font-medium mt-0.5">
                                                         {batch.course}
@@ -501,26 +502,26 @@ export default function BatchManagement() {
 
                                                 <div className="grid grid-cols-2 gap-3">
                                                     <div className="bg-slate-50 p-2 rounded-lg">
-                                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Schedule</p>
+                                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Start Date</p>
                                                         <p className="text-xs font-bold text-slate-700 flex items-center gap-1">
-                                                            <Clock size={12} className="text-indigo-400" />
-                                                            {batch.startTime}
+                                                            <Calendar size={12} className="text-indigo-400" />
+                                                            {batch.startDate}
                                                         </p>
                                                     </div>
                                                     <div className="bg-slate-50 p-2 rounded-lg">
-                                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Capacity</p>
+                                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">End Date</p>
                                                         <p className="text-xs font-bold text-slate-700 flex items-center gap-1">
-                                                            <Users size={12} className="text-indigo-400" />
-                                                            {batch.capacity} seats
+                                                            <Calendar size={12} className="text-indigo-400" />
+                                                            {batch.endDate}
                                                         </p>
                                                     </div>
                                                 </div>
 
                                                 <div className="bg-slate-50 p-2 rounded-lg">
-                                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Schedule Days</p>
+                                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Capacity</p>
                                                     <p className="text-xs font-bold text-slate-700 flex items-center gap-1">
-                                                        <Calendar size={12} className="text-indigo-400" />
-                                                        {batch.days}
+                                                        <Users size={12} className="text-indigo-400" />
+                                                        {batch.capacity} seats
                                                     </p>
                                                 </div>
                                             </div>

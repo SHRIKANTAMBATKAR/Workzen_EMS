@@ -26,7 +26,6 @@ export default function Sidebar({ role, onLogout }) {
             { name: "Manage Trainers", path: "/admin/trainers", icon: GraduationCap, color: "from-emerald-500 to-teal-500" },
             { name: "Manage Analysts", path: "/admin/analysts", icon: BarChart3, color: "from-purple-500 to-pink-500" },
             { name: "Manage Counselors", path: "/admin/counselors", icon: Users, color: "from-amber-500 to-orange-500" },
-            { name: "All User Directory", path: "/admin/all-users", icon: Users, color: "from-rose-500 to-red-500" },
         ],
         TRAINER: [
             { name: "Dashboard", path: "/trainer", icon: LayoutDashboard, color: "from-indigo-500 to-blue-500" },

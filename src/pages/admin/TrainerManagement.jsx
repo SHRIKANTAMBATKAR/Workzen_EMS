@@ -42,7 +42,7 @@ export default function TrainerManagement() {
         role: "TRAINER",
         password: "",
         joiningDate: "",
-        primarySkills: "",
+        primarySkill: "",
         experienceYears: "",
         qualification: "",
     });
@@ -54,7 +54,7 @@ export default function TrainerManagement() {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await api.get("/users?role=TRAINER");
+            const response = await api.get("/admins/trainers");
             setUsers(response.data);
         } catch (error) {
             toast.error("Failed to load trainer directory");
@@ -65,14 +65,14 @@ export default function TrainerManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.email || !form.mobile || !form.password || !form.joiningDate || !form.primarySkills || !form.experienceYears || !form.qualification) {
+        if (!form.name || !form.email || !form.mobile || !form.password || !form.joiningDate || !form.primarySkill || !form.experienceYears || !form.qualification) {
             toast.error("Please fill all required fields");
             return;
         }
 
         try {
             if (editingUser) {
-                const response = await api.patch(`/users/${editingUser.id}`, form);
+                const response = await api.put(`/admins/trainers/${editingUser.id}`, form);
 
                 if (response.status === 200) {
                     toast.success("Trainer profile updated successfully");
@@ -84,7 +84,7 @@ export default function TrainerManagement() {
                         role: "TRAINER",
                         password: "",
                         joiningDate: "",
-                        primarySkills: "",
+                        primarySkill: "",
                         experienceYears: "",
                         qualification: ""
                     });
@@ -93,15 +93,9 @@ export default function TrainerManagement() {
                     throw new Error();
                 }
             } else {
-                const newUser = {
-                    id: String(Date.now()),
-                    ...form,
-                    active: true
-                };
+                const response = await api.post("/admins/trainers", { ...form, active: true });
 
-                const response = await api.post("/users", newUser);
-
-                if (response.status === 201) {
+                if (response.status === 200 || response.status === 201) {
                     toast.success("Trainer account initialized");
                     setForm({
                         name: "",
@@ -110,7 +104,7 @@ export default function TrainerManagement() {
                         role: "TRAINER",
                         password: "",
                         joiningDate: "",
-                        primarySkills: "",
+                        primarySkill: "",
                         experienceYears: "",
                         qualification: ""
                     });
@@ -132,7 +126,7 @@ export default function TrainerManagement() {
     const confirmDelete = async () => {
         if (!userToDelete) return;
         try {
-            const response = await api.delete(`/users/${userToDelete}`);
+            const response = await api.delete(`/admins/trainers/${userToDelete}`);
 
             if (response.status === 200) {
                 toast.success("Trainer removed from system");
@@ -156,7 +150,7 @@ export default function TrainerManagement() {
             role: user.role,
             password: user.password || "",
             joiningDate: user.joiningDate || "",
-            primarySkills: user.primarySkills || "",
+            primarySkill: user.primarySkill || "",
             experienceYears: user.experienceYears || "",
             qualification: user.qualification || "",
         });
@@ -325,8 +319,8 @@ export default function TrainerManagement() {
                                         <input
                                             type="text"
                                             placeholder="e.g. React, Node.js, SQL"
-                                            value={form.primarySkills}
-                                            onChange={(e) => setForm({ ...form, primarySkills: e.target.value })}
+                                            value={form.primarySkill}
+                                            onChange={(e) => setForm({ ...form, primarySkill: e.target.value })}
                                             className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
                                         />
                                     </div>
@@ -359,7 +353,7 @@ export default function TrainerManagement() {
                                             type="button"
                                             onClick={() => {
                                                 setEditingUser(null);
-                                                setForm({ name: "", email: "", mobile: "", role: "TRAINER", password: "", joiningDate: "", primarySkills: "", experienceYears: "", qualification: "" });
+                                                setForm({ name: "", email: "", mobile: "", role: "TRAINER", password: "", joiningDate: "", primarySkill: "", experienceYears: "", qualification: "" });
                                             }}
                                             className="px-6 bg-white border-2 border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 transition-all"
                                         >
@@ -442,7 +436,7 @@ export default function TrainerManagement() {
                                                 <div className="space-y-2 text-left">
                                                     <div>
                                                         <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Primary Skills</p>
-                                                        <p className="text-sm text-slate-800 font-medium">{u.primarySkills || 'N/A'}</p>
+                                                        <p className="text-sm text-slate-800 font-medium">{u.primarySkill || 'N/A'}</p>
                                                     </div>
                                                     <div className="flex gap-4">
                                                         <div>

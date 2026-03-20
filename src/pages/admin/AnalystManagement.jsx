@@ -40,7 +40,7 @@ export default function AnalystManagement() {
         role: "ANALYST",
         password: "",
         specialization: "",
-        experience_years: "",
+        experienceYears: "",
         qualification: "",
         joinDate: "",
     });
@@ -52,7 +52,7 @@ export default function AnalystManagement() {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await api.get("/users?role=ANALYST");
+            const response = await api.get("/admins/analysts");
             setUsers(response.data);
         } catch (error) {
             toast.error("Failed to load analyst directory");
@@ -63,16 +63,16 @@ export default function AnalystManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.email || !form.mobile || !form.password || !form.specialization || !form.experience_years || !form.qualification || !form.joinDate) {
+        if (!form.name || !form.email || !form.mobile || !form.password || !form.specialization || !form.experienceYears || !form.qualification || !form.joinDate) {
             toast.error("Please fill all required fields");
             return;
         }
 
         try {
             if (editingUser) {
-                const response = await api.patch(`/users/${editingUser.id}`, form);
+                const response = await api.put(`/admins/analysts/${editingUser.id}`, form);
 
-                if (response.status === 200) {
+                if (response.status === 200 || response.status === 204) {
                     toast.success("Analyst profile updated successfully");
                     setEditingUser(null);
                     setForm({
@@ -82,7 +82,7 @@ export default function AnalystManagement() {
                         role: "ANALYST",
                         password: "",
                         specialization: "",
-                        experience_years: "",
+                        experienceYears: "",
                         qualification: "",
                         joinDate: "",
                     });
@@ -91,15 +91,9 @@ export default function AnalystManagement() {
                     throw new Error();
                 }
             } else {
-                const newUser = {
-                    id: String(Date.now()),
-                    ...form,
-                    active: true
-                };
+                const response = await api.post("/admins/analysts", { ...form, active: true });
 
-                const response = await api.post("/users", newUser);
-
-                if (response.status === 201) {
+                if (response.status === 200 || response.status === 201) {
                     toast.success("Analyst account initialized");
                     setForm({
                         name: "",
@@ -108,7 +102,7 @@ export default function AnalystManagement() {
                         role: "ANALYST",
                         password: "",
                         specialization: "",
-                        experience_years: "",
+                        experienceYears: "",
                         qualification: "",
                         joinDate: "",
                     });
@@ -130,7 +124,7 @@ export default function AnalystManagement() {
     const confirmDelete = async () => {
         if (!userToDelete) return;
         try {
-            const response = await api.delete(`/users/${userToDelete}`);
+            const response = await api.delete(`/admins/analysts/${userToDelete}`);
 
             if (response.status === 200) {
                 toast.success("Analyst removed from system");
@@ -151,10 +145,10 @@ export default function AnalystManagement() {
             name: user.name,
             email: user.email,
             mobile: user.mobile || "",
-            role: user.role,
+            role: user.role || "ANALYST",
             password: user.password || "",
             specialization: user.specialization || "",
-            experience_years: user.experience_years || "",
+            experienceYears: user.experienceYears || "",
             qualification: user.qualification || "",
             joinDate: user.joinDate || "",
         });
@@ -307,8 +301,8 @@ export default function AnalystManagement() {
                                             <input
                                                 type="number"
                                                 placeholder="0"
-                                                value={form.experience_years}
-                                                onChange={(e) => setForm({ ...form, experience_years: e.target.value })}
+                                                value={form.experienceYears}
+                                                onChange={(e) => setForm({ ...form, experienceYears: e.target.value })}
                                                 className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
                                             />
                                         </div>
@@ -356,7 +350,7 @@ export default function AnalystManagement() {
                                             type="button"
                                             onClick={() => {
                                                 setEditingUser(null);
-                                                setForm({ name: "", email: "", mobile: "", role: "ANALYST", password: "", specialization: "", experience_years: "", qualification: "", joinDate: "" });
+                                                setForm({ name: "", email: "", mobile: "", role: "ANALYST", password: "", specialization: "", experienceYears: "", qualification: "", joinDate: "" });
                                             }}
                                             className="px-6 bg-white border-2 border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 transition-all"
                                         >
@@ -444,7 +438,7 @@ export default function AnalystManagement() {
                                                     <div className="flex gap-4">
                                                         <div>
                                                             <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Experience</p>
-                                                            <p className="text-xs text-slate-600">{u.experience_years ? `${u.experience_years} Years` : 'N/A'}</p>
+                                                            <p className="text-xs text-slate-600">{u.experienceYears ? `${u.experienceYears} Years` : 'N/A'}</p>
                                                         </div>
                                                         <div>
                                                             <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Qualification</p>

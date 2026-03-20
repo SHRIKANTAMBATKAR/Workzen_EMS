@@ -151,16 +151,16 @@ export default function TrainerDashboard() {
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-4">
                                             <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center font-black group-hover:scale-110 transition-transform border border-indigo-100 shadow-sm">
-                                                {batch.name.charAt(0)}
+                                                {(batch.batchName || '?').charAt(0)}
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-2">
-                                                    <p className="font-black text-slate-800 text-lg uppercase tracking-tight">{batch.name}</p>
+                                                    <p className="font-black text-slate-800 text-lg uppercase tracking-tight">{batch.batchName}</p>
                                                     <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black uppercase tracking-tighter rounded-full border border-emerald-200">
                                                         Active
                                                     </span>
                                                 </div>
-                                                <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">{batch.course} • {batch.startTime}</p>
+                                                <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">{batch.course} • {batch.startTime || 'TBD'}</p>
                                             </div>
                                         </div>
                                         <button
@@ -196,7 +196,7 @@ export default function TrainerDashboard() {
                                     <p>No instructional activity recorded yet.</p>
                                 </div>
                             ) : logs.slice(0, 5).map((log, idx) => {
-                                const title = log?.title || log?.topic || "Untitled Session";
+                                const title = log?.topicCovered || log?.title || log?.topic || "Untitled Session";
                                 const attachmentName = log?.fileName || log?.documentName;
                                 const sliceLen = logs.slice(0, 5).length;
 
@@ -216,7 +216,7 @@ export default function TrainerDashboard() {
                                                         {title}
                                                     </p>
                                                     <p className="text-[10px] text-indigo-600 font-black uppercase tracking-wider mt-2">
-                                                        Module: {batches.find(b => String(b.id) === String(log.batchId))?.name || "Independent"}
+                                                        Module: {batches.find(b => String(b.id) === String(log.batchId))?.batchName || "Independent"}
                                                     </p>
                                                 </div>
                                                 {attachmentName && (

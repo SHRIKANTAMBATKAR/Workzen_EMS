@@ -36,10 +36,10 @@ export default function AssignBatch() {
     const handleAssign = async (studentId, batchId) => {
         setSubmitting(studentId);
         try {
-            await api.patch(`/students/${studentId}`, { batchId: batchId || null });
+            const params = batchId ? `?batchId=${batchId}` : "";
+            await api.put(`/students/${studentId}${params}`, {});
             toast.success("Student registration updated");
-            // Optimistic update
-            setStudents(prev => prev.map(s => s.id === studentId ? { ...s, batchId } : s));
+            fetchData();
         } catch (error) {
             toast.error("Assignment failed");
         } finally {
@@ -98,7 +98,7 @@ export default function AssignBatch() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {filteredStudents.map((student) => {
-                            const currentBatch = batches.find(b => String(b.id) === String(student.batchId));
+                            const currentBatch = batches.find(b => String(b.id) === String(student.batch?.id || student.batchId));
                             return (
                                 <div key={student.id} className="p-8 bg-white border border-slate-200 rounded-[2.5rem] hover:border-indigo-300 hover:shadow-xl transition-all duration-500 group relative overflow-hidden flex flex-col justify-between min-h-[400px] shadow-md">
                                     <div className="absolute -right-20 -top-20 w-40 h-40 bg-indigo-100 rounded-full blur-3xl group-hover:bg-indigo-200 transition-colors"></div>
@@ -108,8 +108,8 @@ export default function AssignBatch() {
                                             <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-700 font-black text-2xl border border-indigo-200 group-hover:scale-110 group-hover:rotate-6 transition-all shadow-sm">
                                                 {student.name.charAt(0)}
                                             </div>
-                                            <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${student.batchId ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>
-                                                {student.batchId ? 'Assigned' : 'Unassigned'}
+                                            <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${(student.batch?.id || student.batchId) ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>
+                                                {(student.batch?.id || student.batchId) ? 'Assigned' : 'Unassigned'}
                                             </div>
                                         </div>
 
@@ -123,7 +123,7 @@ export default function AssignBatch() {
                                             <div className="flex items-center gap-3 text-slate-700 font-bold italic">
                                                 <GraduationCap size={18} className={currentBatch ? 'text-indigo-600' : 'text-slate-400'} />
                                                 <span className={currentBatch ? 'text-slate-800' : 'text-slate-400'}>
-                                                    {currentBatch ? currentBatch.name : 'No active batch'}
+                                                    {currentBatch ? (currentBatch.batchName || currentBatch.name) : 'No active batch'}
                                                 </span>
                                             </div>
                                         </div>
@@ -134,14 +134,14 @@ export default function AssignBatch() {
                                             <UserCheck size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600" />
                                             <select
                                                 className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 appearance-none cursor-pointer outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-sm font-bold italic"
-                                                value={student.batchId || ""}
+                                                value={student.batch?.id || student.batchId || ""}
                                                 onChange={(e) => handleAssign(student.id, e.target.value)}
                                                 disabled={submitting === student.id}
                                             >
                                                 <option value="" className="bg-white">Select Batch</option>
                                                 {batches.map(b => (
                                                     <option key={b.id} value={b.id} className="bg-white">
-                                                        {b.name}
+                                                        {b.batchName}
                                                     </option>
                                                 ))}
                                             </select>
@@ -153,7 +153,7 @@ export default function AssignBatch() {
                                                 )}
                                             </div>
                                         </div>
-                                        {student.batchId && (
+                                        {(student.batch?.id || student.batchId) && (
                                             <button
                                                 onClick={() => handleAssign(student.id, null)}
                                                 className="mt-3 flex items-center gap-2 text-[10px] font-black text-red-400 hover:text-red-600 uppercase tracking-widest transition-colors"

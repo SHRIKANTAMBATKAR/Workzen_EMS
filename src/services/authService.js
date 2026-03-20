@@ -6,26 +6,24 @@ export const loginUser = async ({ email, password, role }) => {
   await delay(500);
 
   try {
-    const response = await api.get("/users");
-    const users = response.data;
+    const response = await api.post("/auth/login", { email, password });
+    const user = response.data;
 
-    const user = users.find(
-      (u) =>
-        u.email.toLowerCase() === email.toLowerCase() &&
-        u.password === password &&
-        u.role === role &&
-        u.active
-    );
-
-    if (!user) {
+    // Based on the Java backend, the LoginResponseDTO returns:
+    // id, name, email, role, active, message
+    
+    // The backend does not actually verify the provided 'role' against the login attempt directly here except in controller mapping,
+    // so we verify that the returned role matches the requested one, and that active is true.
+    if (!user || user.message === "Invalid email or password") {
       throw new Error("Invalid credentials");
     }
-
-    // mock JWT token
-    const fakeToken = btoa(`${user.email}:${Date.now()}`);
+    
+    if (user.role !== role || !user.active) {
+      throw new Error("Invalid role or inactive account");
+    }
 
     return {
-      token: fakeToken,
+      token: user.token, // Use real JWT from backend
       role: user.role,
       name: user.name,
       userId: String(user.id),

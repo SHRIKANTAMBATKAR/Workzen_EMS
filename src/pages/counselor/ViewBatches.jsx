@@ -32,8 +32,8 @@ export default function ViewBatches() {
     };
 
     const filteredBatches = batches.filter(b =>
-        (b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            b.course.toLowerCase().includes(searchQuery.toLowerCase())) &&
+        ((b.batchName || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (b.course || "").toLowerCase().includes(searchQuery.toLowerCase())) &&
         (filterStatus === "All" || b.status === filterStatus)
     );
 
@@ -117,7 +117,7 @@ export default function ViewBatches() {
                                 </div>
                             </div>
                         ) : filteredBatches.map((batch) => {
-                            const trainer = trainers.find(t => String(t.id) === String(batch.trainerId));
+                            const trainer = batch.trainer || trainers.find(t => String(t.id) === String(batch.trainerId));
                             return (
                                 <div key={batch.id} className="p-8 bg-white hover:bg-slate-50/80 transition-all duration-300 group text-left relative overflow-hidden border-b border-slate-200">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-100 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -140,7 +140,7 @@ export default function ViewBatches() {
                                             </div>
                                             <div>
                                                 <h4 className="text-xl font-bold text-slate-800 group-hover:text-indigo-600 transition-colors leading-tight italic">
-                                                    {batch.name}
+                                                    {batch.batchName}
                                                 </h4>
                                                 <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em] flex items-center gap-1 mt-1">
                                                     <Tag size={10} />

@@ -52,11 +52,13 @@ export default function StudentManagement() {
 
         setSubmitting(true);
         try {
-            const response = await api.post("/students", {
-                ...form,
-                id: String(Date.now())
-            });
-            if (response.status === 201) {
+            const userStr = localStorage.getItem('user');
+            const currentUser = userStr ? JSON.parse(userStr) : {};
+            const counselorId = currentUser.userId || 1;
+            
+            const batchParam = form.batchId ? `&batchId=${form.batchId}` : '';
+            const response = await api.post(`/students?counselorId=${counselorId}${batchParam}`, form);
+            if (response.status === 200 || response.status === 201) {
                 toast.success("Student registered successfully");
                 setForm({
                     name: "",
@@ -92,7 +94,8 @@ export default function StudentManagement() {
         e.preventDefault();
         setSubmitting(true);
         try {
-            await api.patch(`/students/${editingStudent.id}`, editingStudent);
+            const batchParam = editingStudent.batch?.id || editingStudent.batchId ? `?batchId=${editingStudent.batch?.id || editingStudent.batchId}` : '';
+            await api.put(`/students/${editingStudent.id}${batchParam}`, editingStudent);
             toast.success("Student record updated");
             setShowEdit(false);
             setEditingStudent(null);
@@ -106,7 +109,7 @@ export default function StudentManagement() {
 
     const handleAssignBatch = async (studentId, batchId) => {
         try {
-            await api.patch(`/students/${studentId}`, { batchId });
+            await api.put(`/students/${studentId}?batchId=${batchId}`, {});
             toast.success("Batch assigned successfully");
             fetchData();
         } catch (error) {
@@ -410,19 +413,19 @@ export default function StudentManagement() {
                                                     <div className="relative flex-1 max-w-[180px]">
                                                         <UserCheck size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
                                                         <select
-                                                            value={s.batchId || ""}
+                                                            value={s.batch?.id || s.batchId || ""}
                                                             onChange={(e) => handleAssignBatch(s.id, e.target.value)}
                                                             className="w-full pl-8 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-[11px] font-bold text-slate-600 appearance-none cursor-pointer focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none"
                                                         >
                                                             <option value="" className="bg-white">Assign Batch</option>
                                                             {batches.map(b => (
-                                                                <option key={b.id} value={b.id} className="bg-white">{b.name}</option>
+                                                                <option key={b.id} value={b.id} className="bg-white">{b.batchName || b.name}</option>
                                                             ))}
                                                         </select>
                                                     </div>
-                                                    {s.batchId && (
+                                                    {(s.batch?.id || s.batchId) && (
                                                         <div className="p-1 px-2 bg-indigo-100 border border-indigo-200 rounded text-[10px] font-bold text-indigo-700">
-                                                            {batches.find(b => String(b.id) === String(s.batchId))?.name || "Ref: " + s.batchId}
+                                                            {batches.find(b => String(b.id) === String(s.batch?.id || s.batchId))?.batchName || "Ref: " + (s.batch?.id || s.batchId)}
                                                         </div>
                                                     )}
                                                 </div>

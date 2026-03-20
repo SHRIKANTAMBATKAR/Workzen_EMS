@@ -54,9 +54,9 @@ export default function ManageRecords() {
 
             const trainerId = String(user.userId);
             const trainerLogs = (logRes.data || [])
-                .filter(l => String(l.trainerId) === trainerId)
+                .filter(l => String(l.trainer?.id || l.trainerId) === trainerId)
                 .sort((a, b) => new Date(b.date) - new Date(a.date));
-            const assignedBatches = (batchRes.data || []).filter(b => String(b.trainerId) === trainerId);
+            const assignedBatches = (batchRes.data || []).filter(b => String(b.trainer?.id || b.trainerId) === trainerId);
 
             setRecords(trainerLogs);
             setBatches(assignedBatches);
@@ -84,42 +84,58 @@ export default function ManageRecords() {
 
     const handleDownload = (record) => {
         const fileName = record.fileName || record.documentName;
-        if (!fileName) {
+        if (!fileName && !record.fileData) { // Added check for fileData as well
             toast.error("No file attached to this record");
             return;
         }
-        // Create a text summary file for download since actual files are not stored on json-server
-        const content = [
-            `Session Record - ${record.title || record.topic || "Untitled"}`,
-            `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
-            ``,
-            `Date: ${new Date(record.date).toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" })}`,
-            `Batch: ${getBatchName(record.batchId)}`,
-            `Attached File: ${fileName}`,
-            ``,
-            `Description:`,
-            `${record.description || "No description provided"}`,
-            ``,
-            `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
-            `Generated from WorkZen EMS - Manage Records`
-        ].join("\n");
+        let blob;
+        let filename;
 
-        const blob = new Blob([content], { type: "text/plain" });
+        if (record.fileData) {
+            // If we have binary data from backend (base64 encoded in JSON)
+            const byteCharacters = atob(record.fileData);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            blob = new Blob([byteArray], { type: record.fileType || "application/octet-stream" });
+            filename = record.fileName || `Record_${record.id}.pdf`;
+        } else {
+            // Fallback for legacy text-based notes
+            const content = [
+                `Session Record - ${record.title || record.topicCovered || "Untitled"}`,
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+                ``,
+                `Date: ${new Date(record.date).toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" })}`,
+                `Batch: ${getBatchName(record.batchId)}`,
+                `Attached File: ${record.fileName || record.documentName || "N/A"}`,
+                ``,
+                `Description:`,
+                `${record.description || "No description provided"}`,
+                ``,
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+                `Generated from WorkZen EMS - Manage Records`
+            ].join("\n");
+            blob = new Blob([content], { type: "text/plain" });
+            filename = `Record_${(record.topicCovered || record.title || "session").replace(/\s+/g, "_")}_${record.date}.txt`;
+        }
+
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `Record_${(record.title || record.topic || "session").replace(/\s+/g, "_")}_${record.date}.txt`;
+        link.download = filename;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        toast.success(`Notes downloaded: ${fileName}`);
+        toast.success(`Notes downloaded: ${filename}`);
     };
 
     const openEditModal = (record) => {
         setEditingRecord(record);
         setEditForm({
-            title: record.title || record.topic || "",
+            title: record.topicCovered || record.title || record.topic || "",
             description: record.description || "",
             date: record.date ? record.date.split("T")[0] : "",
             batchId: record.batchId || ""
@@ -139,9 +155,7 @@ export default function ManageRecords() {
         setSaving(true);
         try {
             const updatedRecord = {
-                ...editingRecord,
-                title: editForm.title,
-                topic: editForm.title,
+                topicCovered: editForm.title,
                 description: editForm.description,
                 date: editForm.date,
                 batchId: editForm.batchId
@@ -159,12 +173,12 @@ export default function ManageRecords() {
 
     const getBatchName = (batchId) => {
         const batch = batches.find(b => String(b.id) === String(batchId));
-        return batch ? batch.name : "—";
+        return batch ? (batch.batchName || "—") : "—";
     };
 
     // Filter records based on search & batch
     const filteredRecords = records.filter(record => {
-        const title = (record.title || record.topic || "").toLowerCase();
+        const title = (record.topicCovered || record.title || "").toLowerCase();
         const desc = (record.description || "").toLowerCase();
         const matchesSearch = !searchQuery || title.includes(searchQuery.toLowerCase()) || desc.includes(searchQuery.toLowerCase());
         const matchesBatch = selectedBatchId === "all" || String(record.batchId) === String(selectedBatchId);
@@ -227,7 +241,7 @@ export default function ManageRecords() {
                         >
                             <option value="all">All Batches</option>
                             {batches.map(b => (
-                                <option key={b.id} value={b.id}>{b.name}</option>
+                                <option key={b.id} value={b.id}>{b.batchName || b.name}</option>
                             ))}
                         </select>
                         <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
@@ -268,7 +282,7 @@ export default function ManageRecords() {
                         {/* Table Rows */}
                         <div className="divide-y divide-slate-100">
                             {filteredRecords.map((record, idx) => {
-                                const title = record.title || record.topic || "Untitled Session";
+                                const title = record.topicCovered || record.title || "Untitled Session";
                                 const fileName = record.fileName || record.documentName;
                                 return (
                                     <div
@@ -413,7 +427,7 @@ export default function ManageRecords() {
                                     >
                                         <option value="" disabled>Select batch...</option>
                                         {batches.map(b => (
-                                            <option key={b.id} value={b.id}>{b.name} - {b.course}</option>
+                                            <option key={b.id} value={b.id}>{b.batchName || b.name} - {b.course}</option>
                                         ))}
                                     </select>
                                 </div>
