@@ -34,6 +34,8 @@ export default function ManageRecords() {
     const [editingRecord, setEditingRecord] = useState(null);
     const [editForm, setEditForm] = useState({ title: "", description: "", date: "", batchId: "" });
     const [saving, setSaving] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [recordToDelete, setRecordToDelete] = useState(null);
     const user = JSON.parse(localStorage.getItem("currentUser"));
 
     useEffect(() => {
@@ -68,17 +70,24 @@ export default function ManageRecords() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this record?")) return;
-        setDeletingId(id);
+    const handleDelete = (id) => {
+        setRecordToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!recordToDelete) return;
+        setDeletingId(recordToDelete);
         try {
-            await api.delete(`/sessionLogs/${id}`);
-            setRecords(prev => prev.filter(r => r.id !== id));
+            await api.delete(`/sessionLogs/${recordToDelete}`);
+            setRecords(prev => prev.filter(r => r.id !== recordToDelete));
             toast.success("Record deleted successfully");
+            setIsDeleteModalOpen(false);
         } catch (error) {
             toast.error("Failed to delete record");
         } finally {
             setDeletingId(null);
+            setRecordToDelete(null);
         }
     };
 
@@ -136,9 +145,9 @@ export default function ManageRecords() {
         setEditingRecord(record);
         setEditForm({
             title: record.topicCovered || record.title || record.topic || "",
-            description: record.description || "",
+            description: record.notes || record.description || "",
             date: record.date ? record.date.split("T")[0] : "",
-            batchId: record.batchId || ""
+            batchId: (record.batch?.id || record.batchId) || ""
         });
     };
 
@@ -156,7 +165,7 @@ export default function ManageRecords() {
         try {
             const updatedRecord = {
                 topicCovered: editForm.title,
-                description: editForm.description,
+                notes: editForm.description,
                 date: editForm.date,
                 batchId: editForm.batchId
             };
@@ -171,7 +180,9 @@ export default function ManageRecords() {
         }
     };
 
-    const getBatchName = (batchId) => {
+    const getBatchName = (record) => {
+        if (record.batch?.batchName) return record.batch.batchName;
+        const batchId = record.batch?.id || record.batchId;
         const batch = batches.find(b => String(b.id) === String(batchId));
         return batch ? (batch.batchName || "—") : "—";
     };
@@ -179,9 +190,10 @@ export default function ManageRecords() {
     // Filter records based on search & batch
     const filteredRecords = records.filter(record => {
         const title = (record.topicCovered || record.title || "").toLowerCase();
-        const desc = (record.description || "").toLowerCase();
+        const desc = (record.notes || record.description || "").toLowerCase();
         const matchesSearch = !searchQuery || title.includes(searchQuery.toLowerCase()) || desc.includes(searchQuery.toLowerCase());
-        const matchesBatch = selectedBatchId === "all" || String(record.batchId) === String(selectedBatchId);
+        const recordBatchId = record.batch?.id || record.batchId;
+        const matchesBatch = selectedBatchId === "all" || String(recordBatchId) === String(selectedBatchId);
         return matchesSearch && matchesBatch;
     });
 
@@ -308,18 +320,18 @@ export default function ManageRecords() {
                                         </div>
 
                                         {/* Batch */}
-                                        <div className="col-span-2">
-                                            <span className="inline-block px-3 py-1 bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-wider rounded-full border border-indigo-100 truncate max-w-full">
-                                                {getBatchName(record.batchId)}
-                                            </span>
-                                        </div>
+                                         <div className="col-span-2">
+                                             <span className="inline-block px-3 py-1 bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-wider rounded-full border border-indigo-100 truncate max-w-full">
+                                                 {getBatchName(record)}
+                                             </span>
+                                         </div>
 
                                         {/* Description */}
-                                        <div className="col-span-2">
-                                            <p className="text-xs text-slate-500 italic line-clamp-2 leading-relaxed font-medium">
-                                                {record.description || "No description provided"}
-                                            </p>
-                                        </div>
+                                         <div className="col-span-2">
+                                             <p className="text-xs text-slate-500 italic line-clamp-2 leading-relaxed font-medium">
+                                                 {record.notes || record.description || "No description provided"}
+                                             </p>
+                                         </div>
 
                                         {/* File */}
                                         <div className="col-span-1">
@@ -496,6 +508,52 @@ export default function ManageRecords() {
                                 {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                                 Save Changes
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {isDeleteModalOpen && (
+                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-[60] animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[3rem] w-full max-w-md mx-4 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100">
+                        <div className="p-10 text-center space-y-6">
+                            <div className="w-24 h-24 bg-rose-50 text-rose-500 rounded-[2.5rem] flex items-center justify-center mx-auto mb-2 shadow-inner shadow-rose-100/50">
+                                <AlertCircle size={48} strokeWidth={1.5} className="animate-pulse" />
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <h3 className="text-3xl font-black text-slate-800 italic tracking-tighter">Confirm Deletion</h3>
+                                <p className="text-slate-500 font-medium italic px-4">
+                                    Are you sure you want to permanently remove this session record from the repository? This action cannot be undone.
+                                </p>
+                            </div>
+
+                            <div className="flex flex-col gap-3 pt-4">
+                                <button
+                                    onClick={confirmDelete}
+                                    disabled={deletingId !== null}
+                                    className="w-full py-5 bg-rose-500 text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[10px] hover:bg-rose-600 hover:shadow-xl hover:shadow-rose-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group"
+                                >
+                                    {deletingId !== null ? <Loader2 className="animate-spin" size={16} /> : <Trash2 size={16} className="group-hover:rotate-12 transition-transform" />}
+                                    Permanent Delete
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setIsDeleteModalOpen(false);
+                                        setRecordToDelete(null);
+                                    }}
+                                    disabled={deletingId !== null}
+                                    className="w-full py-5 bg-slate-50 text-slate-400 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[10px] hover:bg-slate-100 hover:text-slate-600 transition-all active:scale-[0.98]"
+                                >
+                                    Abort Operation
+                                </button>
+                            </div>
+                        </div>
+                        <div className="bg-slate-50 py-4 px-10 border-t border-slate-100">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-center gap-2">
+                                <X size={10} /> Security Clearance Required
+                            </p>
                         </div>
                     </div>
                 </div>

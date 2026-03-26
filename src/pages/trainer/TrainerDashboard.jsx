@@ -216,7 +216,7 @@ export default function TrainerDashboard() {
                                                         {title}
                                                     </p>
                                                     <p className="text-[10px] text-indigo-600 font-black uppercase tracking-wider mt-2">
-                                                        Module: {batches.find(b => String(b.id) === String(log.batchId))?.batchName || "Independent"}
+                                                        Module: {batches.find(b => String(b.id) === String(log.batch?.id || log.batchId))?.batchName || "Independent"}
                                                     </p>
                                                 </div>
                                                 {attachmentName && (
