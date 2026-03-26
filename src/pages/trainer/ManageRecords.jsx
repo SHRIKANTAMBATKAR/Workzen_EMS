@@ -163,17 +163,23 @@ export default function ManageRecords() {
         }
         setSaving(true);
         try {
-            const updatedRecord = {
+            const updatePayload = {
                 topicCovered: editForm.title,
                 notes: editForm.description,
                 date: editForm.date,
-                batchId: editForm.batchId
+                batch: { id: editForm.batchId }
             };
-            await api.put(`/sessionLogs/${editingRecord.id}`, updatedRecord);
-            setRecords(prev => prev.map(r => r.id === editingRecord.id ? updatedRecord : r));
-            toast.success("Record updated successfully");
-            closeEditModal();
+            const response = await api.put(`/sessionLogs/${editingRecord.id}`, updatePayload);
+            
+            if (response.data) {
+                setRecords(prev => prev.map(r => r.id === editingRecord.id ? response.data : r));
+                toast.success("Record updated successfully");
+                closeEditModal();
+            } else {
+                throw new Error("Empty response from server");
+            }
         } catch (error) {
+            console.error("Update error:", error);
             toast.error("Failed to update record");
         } finally {
             setSaving(false);

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import {
     BookOpen,
@@ -8,25 +9,78 @@ import {
     Sparkles,
     TrendingUp,
     BarChart3,
-    Calendar
+    Calendar,
+    Loader2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
+import { toast } from "react-hot-toast";
 
 export default function AnalystDashboard() {
     const navigate = useNavigate();
+    const [statsData, setStatsData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const activeBatches = [
-        { name: "React Fullstack B-12", students: 24, progress: 65, status: "Ongoing" },
-        { name: "NodeJS Mastery B-03", students: 18, progress: 40, status: "Ongoing" },
-        { name: "UI/UX Design B-07", students: 15, progress: 90, status: "Finishing" },
-    ];
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
 
-    // Stats data
+    const fetchDashboardData = async () => {
+        setLoading(true);
+        try {
+            const response = await api.get("/analysts/stats");
+            setStatsData(response.data);
+        } catch (error) {
+            toast.error("Failed to fetch dashboard metrics");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const stats = [
-        { label: "Active Batches", value: "14", icon: BookOpen, color: "from-blue-600 to-cyan-600", bgLight: "bg-blue-50", textColor: "text-blue-600", borderColor: "border-blue-200" },
-        { label: "Total Students", value: "285", icon: Users, color: "from-emerald-600 to-teal-600", bgLight: "bg-emerald-50", textColor: "text-emerald-600", borderColor: "border-emerald-200" },
-        { label: "Pending Assignments", value: "42", icon: Clock, color: "from-amber-600 to-orange-600", bgLight: "bg-amber-50", textColor: "text-amber-600", borderColor: "border-amber-200" },
+        { 
+            label: "Active Batches", 
+            value: statsData?.activeBatches?.toString() || "0", 
+            icon: BookOpen, 
+            color: "from-blue-600 to-cyan-600", 
+            bgLight: "bg-blue-50", 
+            textColor: "text-blue-600", 
+            borderColor: "border-blue-200" 
+        },
+        { 
+            label: "Total Students", 
+            value: statsData?.totalStudents?.toString() || "0", 
+            icon: Users, 
+            color: "from-emerald-600 to-teal-600", 
+            bgLight: "bg-emerald-50", 
+            textColor: "text-emerald-600", 
+            borderColor: "border-emerald-200" 
+        },
+        { 
+            label: "Pending Assignments", 
+            value: statsData?.unassignedStudents?.toString() || "0", 
+            icon: Clock, 
+            color: "from-amber-600 to-orange-600", 
+            bgLight: "bg-amber-50", 
+            textColor: "text-amber-600", 
+            borderColor: "border-amber-200" 
+        },
     ];
+
+    if (loading) {
+        return (
+            <DashboardLayout allowedRoles={["ANALYST"]}>
+                <div className="min-h-screen flex items-center justify-center bg-slate-50">
+                    <div className="flex flex-col items-center gap-4">
+                        <Loader2 size={40} className="animate-spin text-amber-600" />
+                        <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Synchronizing Intelligence...</p>
+                    </div>
+                </div>
+            </DashboardLayout>
+        );
+    }
+
+    const recentBatches = statsData?.recentBatches || [];
 
     return (
         <DashboardLayout allowedRoles={["ANALYST"]}>
@@ -94,15 +148,15 @@ export default function AnalystDashboard() {
                         </div>
 
                         <div className="space-y-6">
-                            {activeBatches.map((batch, idx) => (
+                            {recentBatches.length > 0 ? recentBatches.map((batch, idx) => (
                                 <div key={idx} className="space-y-3">
                                     <div className="flex justify-between items-center">
                                         <div>
                                             <p className="font-bold text-slate-800">{batch.name}</p>
                                             <p className="text-xs text-slate-500 flex items-center gap-2 mt-1">
                                                 <Users size={12} className="text-slate-400" />
-                                                {batch.students} Students
-                                                <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase ${batch.status === 'Ongoing'
+                                                {batch.studentCount} / {batch.capacity} Students
+                                                <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase ${batch.status === 'Active'
                                                         ? 'bg-blue-100 text-blue-700'
                                                         : 'bg-amber-100 text-amber-700'
                                                     }`}>
@@ -119,22 +173,27 @@ export default function AnalystDashboard() {
                                         ></div>
                                     </div>
                                 </div>
-                            ))}
+                            )) : (
+                                <div className="py-10 text-center text-slate-400">
+                                    <BookOpen size={40} className="mx-auto mb-2 opacity-20" />
+                                    <p className="text-xs font-bold uppercase tracking-widest">No batches initialized yet</p>
+                                </div>
+                            )}
                         </div>
 
                         {/* Quick Stats */}
                         <div className="mt-6 pt-6 border-t border-slate-200 grid grid-cols-3 gap-4">
                             <div className="text-center">
-                                <p className="text-xs text-slate-400 uppercase tracking-wider">Completion</p>
-                                <p className="text-lg font-black text-slate-800">65%</p>
+                                <p className="text-xs text-slate-400 uppercase tracking-wider">Batches</p>
+                                <p className="text-lg font-black text-slate-800">{statsData?.totalBatches || 0}</p>
                             </div>
                             <div className="text-center">
-                                <p className="text-xs text-slate-400 uppercase tracking-wider">Avg. Size</p>
-                                <p className="text-lg font-black text-slate-800">19</p>
+                                <p className="text-xs text-slate-400 uppercase tracking-wider">Unassigned</p>
+                                <p className="text-lg font-black text-slate-800">{statsData?.unassignedStudents || 0}</p>
                             </div>
                             <div className="text-center">
-                                <p className="text-xs text-slate-400 uppercase tracking-wider">Success</p>
-                                <p className="text-lg font-black text-emerald-600">92%</p>
+                                <p className="text-xs text-slate-400 uppercase tracking-wider">Active</p>
+                                <p className="text-lg font-black text-emerald-600">{statsData?.activeBatches || 0}</p>
                             </div>
                         </div>
                     </div>
@@ -212,23 +271,23 @@ export default function AnalystDashboard() {
                 <div className="grid grid-cols-4 gap-4 pt-4">
                     <div className="bg-white/50 backdrop-blur-sm border border-slate-200 rounded-xl p-4 text-center">
                         <BarChart3 size={20} className="mx-auto mb-2 text-amber-500" />
-                        <p className="text-lg font-black text-slate-800">24</p>
-                        <p className="text-[8px] text-slate-500 uppercase tracking-wider">Courses</p>
+                        <p className="text-lg font-black text-slate-800">{statsData?.totalBatches || 0}</p>
+                        <p className="text-[8px] text-slate-500 uppercase tracking-wider">Total Batches</p>
                     </div>
                     <div className="bg-white/50 backdrop-blur-sm border border-slate-200 rounded-xl p-4 text-center">
                         <Users size={20} className="mx-auto mb-2 text-emerald-500" />
-                        <p className="text-lg font-black text-slate-800">8</p>
+                        <p className="text-lg font-black text-slate-800">{statsData?.totalTrainers || 0}</p>
                         <p className="text-[8px] text-slate-500 uppercase tracking-wider">Trainers</p>
                     </div>
                     <div className="bg-white/50 backdrop-blur-sm border border-slate-200 rounded-xl p-4 text-center">
                         <Clock size={20} className="mx-auto mb-2 text-blue-500" />
-                        <p className="text-lg font-black text-slate-800">156</p>
-                        <p className="text-[8px] text-slate-500 uppercase tracking-wider">Hours/Week</p>
+                        <p className="text-lg font-black text-slate-800">{statsData?.unassignedStudents || 0}</p>
+                        <p className="text-[8px] text-slate-500 uppercase tracking-wider">Pending Students</p>
                     </div>
                     <div className="bg-white/50 backdrop-blur-sm border border-slate-200 rounded-xl p-4 text-center">
                         <CheckCircle2 size={20} className="mx-auto mb-2 text-purple-500" />
-                        <p className="text-lg font-black text-slate-800">12</p>
-                        <p className="text-[8px] text-slate-500 uppercase tracking-wider">Completed</p>
+                        <p className="text-lg font-black text-slate-800">{statsData?.totalStudents || 0}</p>
+                        <p className="text-[8px] text-slate-500 uppercase tracking-wider">Total Students</p>
                     </div>
                 </div>
             </div>

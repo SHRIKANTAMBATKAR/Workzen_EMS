@@ -389,9 +389,7 @@ export default function AllUsersList() {
                                     {selectedUser.role === 'COUNSELOR' && (
                                         <>
                                             <DetailItem icon={<MapPin size={16} />} label="Assigned Region" value={selectedUser.assignedRegion} roleColor={roleStyles[selectedUser.role]} />
-                                            <DetailItem icon={<Star size={16} />} label="Lead Expertise" value={selectedUser.leadExpertise} roleColor={roleStyles[selectedUser.role]} />
                                             <DetailItem icon={<Briefcase size={16} />} label="Experience" value={`${selectedUser.experienceYears} Years`} roleColor={roleStyles[selectedUser.role]} />
-                                            <DetailItem icon={<GraduationCap size={16} />} label="Qualification" value={selectedUser.qualification} roleColor={roleStyles[selectedUser.role]} />
                                         </>
                                     )}
                                     {selectedUser.role === 'ADMIN' && (

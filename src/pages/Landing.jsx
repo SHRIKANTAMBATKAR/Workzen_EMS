@@ -167,7 +167,7 @@ export default function Landing() {
             {/* Badge */}
             <div className="inline-flex items-center bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full px-5 py-2.5 mb-10 border border-indigo-200/50 shadow-sm animate-bounce-active">
               <SparklesIcon className="h-4 w-4 text-indigo-600 mr-2" />
-              <span className="text-xs font-black text-indigo-700 uppercase tracking-[0.2em]">🚀 Introducing WorkZen EMS 2.0</span>
+              <span className="text-xs font-black text-indigo-700 uppercase tracking-[0.2em]">🚀 Introducing WorkZen EMS</span>
             </div>
 
             {/* Main Heading */}

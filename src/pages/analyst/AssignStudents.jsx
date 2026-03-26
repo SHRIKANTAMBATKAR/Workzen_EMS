@@ -49,7 +49,8 @@ export default function AssignStudents() {
     const handleAssign = async (studentId, batchId) => {
         setSubmitting(studentId);
         try {
-            await api.patch(`/students/${studentId}`, { batchId: batchId || null });
+            const url = batchId ? `/students/${studentId}/assign?batchId=${batchId}` : `/students/${studentId}/assign`;
+            await api.patch(url);
             toast.success("Entity-Node binding updated");
             fetchData();
         } catch (error) {

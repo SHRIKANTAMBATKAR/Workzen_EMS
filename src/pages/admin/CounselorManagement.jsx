@@ -42,7 +42,6 @@ export default function CounselorManagement() {
         password: "",
         assignedRegion: "",
         experienceYears: "",
-        leadExpertise: "",
     });
 
     useEffect(() => {
@@ -63,7 +62,7 @@ export default function CounselorManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.email || !form.mobile || !form.password || !form.assignedRegion || !form.experienceYears || !form.leadExpertise) {
+        if (!form.name || !form.email || !form.mobile || !form.password || !form.assignedRegion || !form.experienceYears) {
             toast.error("Please fill all required fields");
             return;
         }
@@ -83,7 +82,6 @@ export default function CounselorManagement() {
                         password: "",
                         assignedRegion: "",
                         experienceYears: "",
-                        leadExpertise: "",
                     });
                     fetchUsers();
                 } else {
@@ -102,7 +100,6 @@ export default function CounselorManagement() {
                         password: "",
                         assignedRegion: "",
                         experienceYears: "",
-                        leadExpertise: "",
                     });
                     fetchUsers();
                 } else {
@@ -147,7 +144,6 @@ export default function CounselorManagement() {
             password: user.password || "",
             assignedRegion: user.assignedRegion || "",
             experienceYears: user.experienceYears || "",
-            leadExpertise: user.leadExpertise || "",
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -308,33 +304,9 @@ export default function CounselorManagement() {
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Qualification</label>
-                                    <div className="relative group">
-                                        <GraduationCap size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-purple-600 transition-colors" />
-                                        <input
-                                            type="text"
-                                            placeholder="e.g. MBA, M.A. Psychology"
-                                            value={form.qualification}
-                                            onChange={(e) => setForm({ ...form, qualification: e.target.value })}
-                                            className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
-                                        />
-                                    </div>
-                                </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Lead Expertise</label>
-                                    <div className="relative group">
-                                        <Star size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-purple-600 transition-colors" />
-                                        <input
-                                            type="text"
-                                            placeholder="e.g. Career Counseling, Emotional Intelligence"
-                                            value={form.leadExpertise}
-                                            onChange={(e) => setForm({ ...form, leadExpertise: e.target.value })}
-                                            className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
-                                        />
-                                    </div>
-                                </div>
+
+
 
                                 <div className="flex gap-3 pt-4">
                                     <button
@@ -349,7 +321,7 @@ export default function CounselorManagement() {
                                             type="button"
                                             onClick={() => {
                                                 setEditingUser(null);
-                                                setForm({ name: "", email: "", mobile: "", role: "COUNSELOR", password: "", assignedRegion: "", experienceYears: "", qualification: "", leadExpertise: "" });
+                                                setForm({ name: "", email: "", mobile: "", role: "COUNSELOR", password: "", assignedRegion: "", experienceYears: "" });
                                             }}
                                             className="px-6 bg-white border-2 border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 transition-all"
                                         >
@@ -390,7 +362,7 @@ export default function CounselorManagement() {
                                 <thead>
                                     <tr className="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-purple-200">
                                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-purple-700">Counselor Info</th>
-                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-purple-700">Expertise & Assignment</th>
+                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-purple-700">Assignment</th>
                                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-purple-700">Credentials</th>
                                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-purple-700 text-right">Operations</th>
                                     </tr>
@@ -430,18 +402,11 @@ export default function CounselorManagement() {
                                             </td>
                                             <td className="px-8 py-5">
                                                 <div className="space-y-2 text-left">
-                                                    <div>
-                                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Lead Expertise</p>
-                                                        <p className="text-sm text-slate-800 font-medium">{u.leadExpertise || 'N/A'}</p>
-                                                    </div>
+
                                                     <div className="flex gap-4">
                                                         <div>
                                                             <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Experience</p>
                                                             <p className="text-xs text-slate-600">{u.experienceYears ? `${u.experienceYears} Years` : 'N/A'}</p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Qualification</p>
-                                                            <p className="text-xs text-slate-600">{u.qualification || 'N/A'}</p>
                                                         </div>
                                                     </div>
                                                 </div>
