@@ -27,7 +27,7 @@ WorkZen EMS is a premium, glassmorphic-themed web application designed to stream
 - **Backend (Mock)**: [JSON Server](https://github.com/typicode/json-server)
 - **Icons**: [Lucide React](https://lucide.dev/) & [Heroicons](https://heroicons.com/)
 - **Charts**: [Recharts](https://recharts.org/)
-- **Utils**: Axios, React Router, React Hot Toast
+- **Utils**: Axios, React Router, React Hot Toast.
 
 ## ⚙️ Getting Started
 
