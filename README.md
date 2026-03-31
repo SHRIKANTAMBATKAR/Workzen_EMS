@@ -24,7 +24,7 @@ WorkZen EMS is a premium, glassmorphic-themed web application designed to stream
 
 - **Frontend**: [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
-- **Backend (Mock)**: [JSON Server](https://github.com/typicode/json-server)
+- **Backend Integration**: Spring Boot REST API (JWT Authenticated)
 - **Icons**: [Lucide React](https://lucide.dev/) & [Heroicons](https://heroicons.com/)
 - **Charts**: [Recharts](https://recharts.org/)
 - **Utils**: Axios, React Router, React Hot Toast.
@@ -42,13 +42,9 @@ WorkZen EMS is a premium, glassmorphic-themed web application designed to stream
    npm install
    ```
 ### Development
-To start both the frontend and the mock backend server simultaneously:
+
+To start the frontend development server:
 ```bash
 npm run dev
 ```
-The application will be available at `http://localhost:5173` and the API at `http://localhost:3001`.
 
-## 📂 Project Structure
-- `/src/pages`: Role-specific dashboards and management screens.
-- `/src/components`: Reusable UI components and layouts.
-- `/db.json`: Local database for JSON Server.
