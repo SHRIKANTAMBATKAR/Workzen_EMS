@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "../pages/Landing";
 import Login from "../pages/Login";
+import AdminRegister from "../pages/AdminRegister";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import UserManagement from "../pages/admin/UserManagement";
 import TrainerManagement from "../pages/admin/TrainerManagement";
@@ -25,6 +26,7 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register-admin" element={<AdminRegister />} />
 
         {/* Admin */}
         <Route path="/admin" element={<AdminDashboard />} />

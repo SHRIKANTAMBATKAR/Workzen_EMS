@@ -1,5 +1,5 @@
- sudo delete web service Workzen-EMS-Backendimport { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../services/authService";
 import { Mail, Lock, LogIn, ArrowRight, ShieldCheck, Eye, EyeOff, Sparkles, UserCircle } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -305,6 +305,13 @@ export default function Login() {
 
           {/* Footer */}
           <div className="text-center text-[10px] text-slate-400 border-t border-indigo-100/50 pt-6">
+            <span>New here? </span>
+            <Link
+              to="/register-admin"
+              className="text-indigo-600 hover:text-indigo-700 font-black text-[11px] transition-colors"
+            >
+              Register as Admin
+            </Link>
           </div>
         </div>
       </div>

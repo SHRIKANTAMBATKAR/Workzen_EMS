@@ -2,6 +2,16 @@ import api from "./api";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/**
+ * Register a new admin account.
+ * Calls POST /api/auth/register-admin
+ * @param {{ name: string, email: string, password: string, mobile: string }} adminData
+ */
+export const registerAdmin = async (adminData) => {
+  const response = await api.post("/auth/register-admin", adminData);
+  return response.data;
+};
+
 export const loginUser = async ({ email, password, role }) => {
   await delay(500);
 
